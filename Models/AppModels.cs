@@ -12,6 +12,10 @@
     public class InvoiceDetails
     {
         public string hsCode { get; set; }
+        public string productionDescription { get; set; }
+
+
         public decimal quantity { get; set; }
+        
     }
 }
