@@ -1,0 +1,444 @@
+﻿@page "/invoice"
+@using AppliedInvoice.Models
+
+<h2 class="title">Invoice Entry</h2>
+
+<div class="invoice-container">
+
+    <div class="section">
+
+        <h3>Invoice Information</h3>
+
+        <div class="grid">
+
+            <div>
+                <label>Invoice Type</label>
+                <input @bind="invoice.invoiceType" />
+            </div>
+
+            <div>
+                <label>Invoice Date</label>
+                <input type="date" @bind="invoice.invoiceDate" />
+            </div>
+
+            <div>
+                <label>Invoice Ref No</label>
+                <input @bind="invoice.invoiceRefNo" />
+            </div>
+
+            <div>
+                <label>Scenario Id</label>
+                <input @bind="invoice.scenarioId" />
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <h3>Seller Information</h3>
+
+        <div class="grid">
+
+            <div>
+                <label>Seller NTN/CNIC</label>
+                <input @bind="invoice.sellerNTNCNIC" />
+            </div>
+
+            <div>
+                <label>Seller Business Name</label>
+                <input @bind="invoice.sellerBusinessName" />
+            </div>
+
+            <div>
+                <label>Seller Province</label>
+                <input @bind="invoice.sellerProvince" />
+            </div>
+
+            <div>
+                <label>Seller Address</label>
+                <input @bind="invoice.sellerAddress" />
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <h3>Buyer Information</h3>
+
+        <div class="grid">
+
+            <div>
+                <label>Buyer NTN/CNIC</label>
+                <input @bind="invoice.buyerNTNCNIC" />
+            </div>
+
+            <div>
+                <label>Buyer Business Name</label>
+                <input @bind="invoice.buyerBusinessName" />
+            </div>
+
+            <div>
+                <label>Buyer Province</label>
+                <input @bind="invoice.buyerProvince" />
+            </div>
+
+            <div>
+                <label>Buyer Address</label>
+                <input @bind="invoice.buyerAddress" />
+            </div>
+
+            <div>
+                <label>Buyer Registration Type</label>
+                <input @bind="invoice.buyerRegisterationType" />
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <h3>Items</h3>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>#</th>
+                        <th>hsCode</th>
+                        <th>Description</th>
+                        <th>Rate</th>
+                        <th>UOM</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>ValueExST</th>
+                        <th>RetailPrice</th>
+                        <th>SalesTax</th>
+                        <th>Withheld</th>
+                        <th>Extra</th>
+                        <th>Further</th>
+                        <th>SRO</th>
+                        <th>FED</th>
+                        <th>Discount</th>
+                        <th>SaleType</th>
+                        <th>SROItem</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @for (int i = 0; i < invoice.items.Count; i++)
+                    {
+                        var item = invoice.items[i];
+
+                        <tr>
+
+                            <td>@(i + 1)</td>
+
+                            <td><input @bind="item.hsCode" /></td>
+
+                            <td><input @bind="item.productDescription" /></td>
+
+                            <td><input type="number" @bind="item.rate" @oninput="Calculate" /></td>
+
+                            <td><input @bind="item.uoM" /></td>
+
+                            <td><input type="number" @bind="item.quantity" @oninput="Calculate" /></td>
+
+                            <td class="readonly">@item.totalValues</td>
+
+                            <td><input type="number" @bind="item.valueSalesExcludingsST" /></td>
+
+                            <td><input type="number" @bind="item.fixedNotifiedValueOrRetailPrice" /></td>
+
+                            <td><input type="number" @bind="item.salesTaxApplicable" /></td>
+
+                            <td><input type="number" @bind="item.salesTaxWithheldAtSource" /></td>
+
+                            <td><input type="number" @bind="item.extraTax" /></td>
+
+                            <td><input type="number" @bind="item.furtherTax" /></td>
+
+                            <td><input type="number" @bind="item.sroScheduleNo" /></td>
+
+                            <td><input type="number" @bind="item.fedPayable" /></td>
+
+                            <td><input type="number" @bind="item.discount" /></td>
+
+                            <td><input @bind="item.saleType" /></td>
+
+                            <td><input @bind="item.sroItemSerialNo" /></td>
+
+                            <td>
+                                <button class="delete-btn" @onclick="(() => DeleteItem(i))">
+                                    X
+                                </button>
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <button class="add-btn" @onclick="AddItem">
+            + Add Item
+        </button>
+
+        <div class="grand-total">
+
+            Grand Total : <b>@GrandTotal()</b>
+
+        </div>
+
+    </div>
+
+
+    <div class="actions">
+
+        <button class="save-btn" @onclick="SaveInvoice">
+            Save Invoice
+        </button>
+
+        <button class="api-btn">
+            Call API
+        </button>
+
+    </div>
+
+</div>
+
+<style>
+
+    body {
+        background: #eef2f7;
+        font-family: Segoe UI, Arial, sans-serif;
+    }
+
+    .title {
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #1f2937;
+    }
+
+    .invoice-container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .section {
+        margin-bottom: 30px;
+    }
+
+        .section h3 {
+            color: #111827;
+            margin-bottom: 10px;
+            border-left: 5px solid #2563eb;
+            padding-left: 10px;
+        }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        gap: 18px;
+    }
+
+    label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    input {
+        width: 100%;
+        padding: 9px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 13px;
+        transition: 0.2s;
+    }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 4px rgba(37,99,235,0.4);
+        }
+
+    .table-wrapper {
+        overflow-x: auto;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+        table th {
+            background: #1d4ed8;
+            color: white;
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            font-weight: 600;
+        }
+
+        table td {
+            border: 1px solid #e5e7eb;
+            padding: 6px;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+    .readonly {
+        background: #e5e7eb;
+        font-weight: 700;
+    }
+
+    .add-btn {
+        margin-top: 12px;
+        background: #16a34a;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .add-btn:hover {
+            background: #15803d;
+        }
+
+    .delete-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+    .grand-total {
+        margin-top: 15px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .actions {
+        margin-top: 25px;
+    }
+
+    .save-btn {
+        background: #f59e0b;
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 6px;
+        margin-right: 10px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .save-btn:hover {
+            background: #d97706;
+        }
+
+    .api-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .api-btn:hover {
+            background: #1e40af;
+        }
+
+</style>
+
+
+
+@code {
+
+    InvoiceMaster invoice = new InvoiceMaster()
+    {
+        items = new List<InvoiceDetails>()
+{
+new InvoiceDetails()
+}
+    };
+
+    void AddItem()
+    {
+        invoice.items.Add(new InvoiceDetails());
+    }
+
+    void DeleteItem(int index)
+    {
+        invoice.items.RemoveAt(index);
+    }
+
+    void Calculate()
+    {
+        foreach (var item in invoice.items)
+        {
+            item.totalValues = item.rate * item.quantity;
+        }
+    }
+
+    decimal GrandTotal()
+    {
+        decimal total = 0;
+
+        foreach (var item in invoice.items)
+        {
+            total += item.totalValues
+            + item.salesTaxApplicable
+            + item.extraTax
+            + item.furtherTax
+            + item.fedPayable
+            - item.discount;
+        }
+
+        return total;
+    }
+
+    void SaveInvoice()
+    {
+        Console.WriteLine("Invoice Saved");
+    }
+
+}
