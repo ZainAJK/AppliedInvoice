@@ -105,14 +105,108 @@
 
     <div class="section">
 
-        <h3>Items</h3>
+        <h3>Item Entry</h3>
+
+        <div class="grid">
+
+            <div>
+                <label>hsCode</label>
+                <input @bind="currentItem.hsCode" />
+            </div>
+
+            <div>
+                <label>Description</label>
+                <input @bind="currentItem.productDescription" />
+            </div>
+
+            <div>
+                <label>Rate</label>
+                <<input type="number" @bind="currentItem.rate" @bind:event="oninput" />
+            </div>
+
+            <div>
+                <label>UOM</label>
+                <input @bind="currentItem.uoM" />
+            </div>
+
+            <div>
+                <label>Quantity</label>
+                <input type="number" @bind="currentItem.quantity" @bind:event="oninput" />
+            </div>
+
+            <div>
+                <label>ValueExST</label>
+                <input type="number" @bind="currentItem.valueSalesExcludingsST" />
+            </div>
+
+            <div>
+                <label>RetailPrice</label>
+                <input type="number" @bind="currentItem.fixedNotifiedValueOrRetailPrice" />
+            </div>
+
+            <div>
+                <label>SalesTax</label>
+                <input type="number" @bind="currentItem.salesTaxApplicable" />
+            </div>
+
+            <div>
+                <label>Withheld</label>
+                <input type="number" @bind="currentItem.salesTaxWithheldAtSource" />
+            </div>
+
+            <div>
+                <label>ExtraTax</label>
+                <input type="number" @bind="currentItem.extraTax" />
+            </div>
+
+            <div>
+                <label>FurtherTax</label>
+                <input type="number" @bind="currentItem.furtherTax" />
+            </div>
+
+            <div>
+                <label>SRO</label>
+                <input type="number" @bind="currentItem.sroScheduleNo" />
+            </div>
+
+            <div>
+                <label>FED</label>
+                <input type="number" @bind="currentItem.fedPayable" />
+            </div>
+
+            <div>
+                <label>Discount</label>
+                <input type="number" @bind="currentItem.discount" />
+            </div>
+
+            <div>
+                <label>SaleType</label>
+                <input @bind="currentItem.saleType" />
+            </div>
+
+            <div>
+                <label>SROItem</label>
+                <input @bind="currentItem.sroItemSerialNo" />
+            </div>
+
+        </div>
+
+        <button class="add-btn" @onclick="AddItem">
+            + Add Item
+        </button>
+
+    </div>
+
+
+    <div class="section">
+
+        <h3>Items List</h3>
 
         <div class="table-wrapper">
 
             <table>
 
                 <thead>
-
                     <tr>
                         <th>#</th>
                         <th>hsCode</th>
@@ -134,7 +228,6 @@
                         <th>SROItem</th>
                         <th>Action</th>
                     </tr>
-
                 </thead>
 
                 <tbody>
@@ -146,40 +239,23 @@
                         <tr>
 
                             <td>@(i + 1)</td>
-
-                            <td><input @bind="item.hsCode" /></td>
-
-                            <td><input @bind="item.productDescription" /></td>
-
-                            <td><input type="number" @bind="item.rate" @oninput="Calculate" /></td>
-
-                            <td><input @bind="item.uoM" /></td>
-
-                            <td><input type="number" @bind="item.quantity" @oninput="Calculate" /></td>
-
-                            <td class="readonly">@item.totalValues</td>
-
-                            <td><input type="number" @bind="item.valueSalesExcludingsST" /></td>
-
-                            <td><input type="number" @bind="item.fixedNotifiedValueOrRetailPrice" /></td>
-
-                            <td><input type="number" @bind="item.salesTaxApplicable" /></td>
-
-                            <td><input type="number" @bind="item.salesTaxWithheldAtSource" /></td>
-
-                            <td><input type="number" @bind="item.extraTax" /></td>
-
-                            <td><input type="number" @bind="item.furtherTax" /></td>
-
-                            <td><input type="number" @bind="item.sroScheduleNo" /></td>
-
-                            <td><input type="number" @bind="item.fedPayable" /></td>
-
-                            <td><input type="number" @bind="item.discount" /></td>
-
-                            <td><input @bind="item.saleType" /></td>
-
-                            <td><input @bind="item.sroItemSerialNo" /></td>
+                            <td>@item.hsCode</td>
+                            <td>@item.productDescription</td>
+                            <td>@item.rate</td>
+                            <td>@item.uoM</td>
+                            <td>@item.quantity</td>
+                            <td>@item.totalValues</td>
+                            <td>@item.valueSalesExcludingsST</td>
+                            <td>@item.fixedNotifiedValueOrRetailPrice</td>
+                            <td>@item.salesTaxApplicable</td>
+                            <td>@item.salesTaxWithheldAtSource</td>
+                            <td>@item.extraTax</td>
+                            <td>@item.furtherTax</td>
+                            <td>@item.sroScheduleNo</td>
+                            <td>@item.fedPayable</td>
+                            <td>@item.discount</td>
+                            <td>@item.saleType</td>
+                            <td>@item.sroItemSerialNo</td>
 
                             <td>
                                 <button class="delete-btn" @onclick="(() => DeleteItem(i))">
@@ -196,14 +272,8 @@
 
         </div>
 
-        <button class="add-btn" @onclick="AddItem">
-            + Add Item
-        </button>
-
         <div class="grand-total">
-
             Grand Total : <b>@GrandTotal()</b>
-
         </div>
 
     </div>
@@ -223,18 +293,17 @@
 
 </div>
 
+
 <style>
 
     body {
         background: #eef2f7;
-        font-family: Segoe UI, Arial, sans-serif;
+        font-family: Segoe UI,Arial;
     }
 
     .title {
         text-align: center;
-        font-weight: 700;
         margin-bottom: 20px;
-        color: #1f2937;
     }
 
     .invoice-container {
@@ -245,12 +314,10 @@
     }
 
     .section {
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
 
         .section h3 {
-            color: #111827;
-            margin-bottom: 10px;
             border-left: 5px solid #2563eb;
             padding-left: 10px;
         }
@@ -258,34 +325,23 @@
     .grid {
         display: grid;
         grid-template-columns: repeat(4,1fr);
-        gap: 18px;
+        gap: 15px;
     }
 
     label {
         font-size: 12px;
         font-weight: 600;
-        color: #374151;
     }
 
     input {
         width: 100%;
-        padding: 9px;
+        padding: 8px;
         border: 1px solid #d1d5db;
         border-radius: 6px;
-        font-size: 13px;
-        transition: 0.2s;
     }
-
-        input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 4px rgba(37,99,235,0.4);
-        }
 
     .table-wrapper {
         overflow-x: auto;
-        border-radius: 8px;
-        margin-top: 10px;
     }
 
     table {
@@ -300,8 +356,6 @@
             padding: 10px;
             position: sticky;
             top: 0;
-            z-index: 1;
-            font-weight: 600;
         }
 
         table td {
@@ -309,49 +363,27 @@
             padding: 6px;
         }
 
-        table tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-    .readonly {
-        background: #e5e7eb;
-        font-weight: 700;
-    }
-
     .add-btn {
-        margin-top: 12px;
+        margin-top: 10px;
         background: #16a34a;
         color: white;
         border: none;
         padding: 10px 18px;
         border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: 0.2s;
     }
-
-        .add-btn:hover {
-            background: #15803d;
-        }
 
     .delete-btn {
         background: #ef4444;
         color: white;
         border: none;
-        padding: 6px 10px;
+        padding: 5px 8px;
         border-radius: 4px;
-        cursor: pointer;
     }
-
-        .delete-btn:hover {
-            background: #dc2626;
-        }
 
     .grand-total {
         margin-top: 15px;
         font-size: 20px;
-        font-weight: 700;
-        color: #111827;
+        font-weight: bold;
     }
 
     .actions {
@@ -365,13 +397,7 @@
         padding: 12px 22px;
         border-radius: 6px;
         margin-right: 10px;
-        font-weight: 600;
-        cursor: pointer;
     }
-
-        .save-btn:hover {
-            background: #d97706;
-        }
 
     .api-btn {
         background: #2563eb;
@@ -379,62 +405,117 @@
         border: none;
         padding: 12px 22px;
         border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
     }
 
-        .api-btn:hover {
-            background: #1e40af;
-        }
-
 </style>
-
-
 
 @code {
 
     InvoiceMaster invoice = new InvoiceMaster()
     {
         items = new List<InvoiceDetails>()
-{
-new InvoiceDetails()
-}
     };
+
+    InvoiceDetails currentItem = new InvoiceDetails();
 
     void AddItem()
     {
-        invoice.items.Add(new InvoiceDetails());
+        if (currentItem.rate < 0) currentItem.rate = 0;
+        if (currentItem.quantity < 0) currentItem.quantity = 0;
+
+        currentItem.totalValues = currentItem.rate * currentItem.quantity;
+
+        if (currentItem.valueSalesExcludingsST == 0)
+            currentItem.valueSalesExcludingsST = currentItem.totalValues;
+
+        if (currentItem.salesTaxApplicable == 0)
+            currentItem.salesTaxApplicable = currentItem.totalValues * 0.18M;
+
+        invoice.items.Add(currentItem);
+
+        currentItem = new InvoiceDetails();
+
+        StateHasChanged();
     }
+
+    void SafeDefaults()
+    {
+
+        if (currentItem.rate < 0)
+            currentItem.rate = 0;
+
+        if (currentItem.quantity < 0)
+            currentItem.quantity = 0;
+
+        if (currentItem.valueSalesExcludingsST < 0)
+            currentItem.valueSalesExcludingsST = 0;
+
+        if (currentItem.salesTaxApplicable < 0)
+            currentItem.salesTaxApplicable = 0;
+
+        if (currentItem.extraTax < 0)
+            currentItem.extraTax = 0;
+
+        if (currentItem.furtherTax < 0)
+            currentItem.furtherTax = 0;
+
+        if (currentItem.fedPayable < 0)
+            currentItem.fedPayable = 0;
+
+        if (currentItem.discount < 0)
+            currentItem.discount = 0;
+
+    }
+
+
+    void CalculateCurrentItem()
+    {
+
+        currentItem.totalValues = currentItem.rate * currentItem.quantity;
+
+        if (currentItem.valueSalesExcludingsST == 0)
+        {
+            currentItem.valueSalesExcludingsST = currentItem.totalValues;
+        }
+
+        if (currentItem.salesTaxApplicable == 0)
+        {
+            currentItem.salesTaxApplicable = currentItem.valueSalesExcludingsST * 0.18M;
+        }
+
+    }
+
 
     void DeleteItem(int index)
     {
         invoice.items.RemoveAt(index);
     }
 
-    void Calculate()
-    {
-        foreach (var item in invoice.items)
-        {
-            item.totalValues = item.rate * item.quantity;
-        }
-    }
 
     decimal GrandTotal()
     {
+
         decimal total = 0;
 
         foreach (var item in invoice.items)
         {
-            total += item.totalValues
+
+            decimal itemTotal =
+            item.totalValues
             + item.salesTaxApplicable
             + item.extraTax
             + item.furtherTax
             + item.fedPayable
             - item.discount;
+
+            total += itemTotal;
+
         }
 
         return total;
+
     }
+
 
     void SaveInvoice()
     {
