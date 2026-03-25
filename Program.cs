@@ -1,5 +1,7 @@
 using AppliedInvoice.Components;
 using AppliedInvoice.Services;
+using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<PdfService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=wwwroot/DB/FbrInvoice.db"));
 
 var app = builder.Build();
 
