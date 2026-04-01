@@ -9,8 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<PdfService>();
+
+var dbPath = Path.Combine(
+    builder.Environment.WebRootPath, // 👈 this points to wwwroot
+    "DB",
+    "Invoice.db"
+);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=wwwroot/DB/FbrInvoice.db"));
+    options.UseSqlite($"Data Source={dbPath}"));
+
+builder.Services.AddSingleton<SQLiteService>();
 
 var app = builder.Build();
 

@@ -9,7 +9,6 @@ namespace AppliedInvoice.Models
 
     public class InvoiceMaster
     {
-        public int Id { get; set; }
         public string? invoiceType { get; set; }
 
         public DateTime invoiceDate { get; set; }
@@ -35,8 +34,6 @@ namespace AppliedInvoice.Models
 
     public class InvoiceDetails
     {
-        public int Id { get; set; }
-        public int InvoiceMasterId { get; set; }
         public string? hsCode { get; set; }
         public string? productDescription { get; set; }
         public decimal rate { get; set; }

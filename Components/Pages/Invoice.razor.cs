@@ -10,8 +10,7 @@ namespace AppliedInvoice.Components.Pages
     public partial class Invoice
     {
         // 🔥 DB Inject
-        [Inject]
-        public AppDbContext db { get; set; }
+        
 
         InvoiceMaster invoice = new InvoiceMaster()
         {
@@ -92,35 +91,11 @@ namespace AppliedInvoice.Components.Pages
             );
         }
 
-        // 🔥 DATABASE SAVE
-        public async Task SaveInvoice()
+        public void Save()
         {
-            // Master save
-            db.Invoices.Add(invoice);
-            await db.SaveChangesAsync();
-
-            // Details save
-            foreach (var item in invoice.items)
+            if (GetFbrResponse())
             {
-                item.InvoiceMasterId = invoice.Id;
-                db.InvoiceDetails.Add(item);
-            }
-
-            await db.SaveChangesAsync();
-
-            Console.WriteLine("✅ Invoice Saved in Database!");
-        }
-
-        // 🔥 MAIN SAVE
-        public async Task Save()
-        {
-            if (GetFbrResponse()) // ⚠️ ye same hai (return true wala part untouched)
-            {
-                await SaveInvoice(); // 🔥 DB save yahan add kiya
-            }
-            else
-            {
-                Console.WriteLine("❌ FBR Error");
+                DB.SaveInvoice(invoice);
             }
         }
 
