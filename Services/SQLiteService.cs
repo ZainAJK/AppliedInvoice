@@ -71,9 +71,103 @@ namespace AppliedInvoice.Services
                 Row_Details.Add(Row_Detail);
             }
 
+            try
+            {
+                if (MyConnection.State != ConnectionState.Open)
+                    MyConnection.Open();
 
-            // Save Master Row
-            // Sabe Details item list
+                // ===== INSERT MASTER =====
+                string masterQuery = @"
+                     INSERT INTO InvoiceMaster
+                (invoiceType, invoiceDate, invoiceRefNo, scenarioId,
+                 sellerNTNCNIC, sellerBusinessName, sellerProvince, sellerAddress,
+                 buyerNTNCNIC, buyerBusinessName, buyerProvince, buyerRegisterationType, buyerAddress)
+                VALUES
+                (@invoiceType, @invoiceDate, @invoiceRefNo, @scenarioId,
+                 @sellerNTNCNIC, @sellerBusinessName, @sellerProvince, @sellerAddress,
+                 @buyerNTNCNIC, @buyerBusinessName, @buyerProvince, @buyerRegisterationType, @buyerAddress);
+    
+                SELECT last_insert_rowid();";
+
+                long masterId;
+
+                using (SQLiteCommand cmd = new SQLiteCommand(masterQuery, MyConnection))
+                {
+                    cmd.Parameters.AddWithValue("@invoiceType", invoice.invoiceType);
+                    cmd.Parameters.AddWithValue("@invoiceDate", invoice.invoiceDate);
+                    cmd.Parameters.AddWithValue("@invoiceRefNo", invoice.invoiceRefNo);
+                    cmd.Parameters.AddWithValue("@scenarioId", invoice.scenarioId);
+
+                    cmd.Parameters.AddWithValue("@sellerNTNCNIC", invoice.sellerNTNCNIC);
+                    cmd.Parameters.AddWithValue("@sellerBusinessName", invoice.sellerBusinessName);
+                    cmd.Parameters.AddWithValue("@sellerProvince", invoice.sellerProvince);
+                    cmd.Parameters.AddWithValue("@sellerAddress", invoice.sellerAddress);
+
+                    cmd.Parameters.AddWithValue("@buyerNTNCNIC", invoice.buyerNTNCNIC);
+                    cmd.Parameters.AddWithValue("@buyerBusinessName", invoice.buyerBusinessName);
+                    cmd.Parameters.AddWithValue("@buyerProvince", invoice.buyerProvince);
+                    cmd.Parameters.AddWithValue("@buyerRegisterationType", invoice.buyerRegisterationType);
+                    cmd.Parameters.AddWithValue("@buyerAddress", invoice.buyerAddress);
+
+                    masterId = (long)cmd.ExecuteScalar();
+                }
+
+                // ===== INSERT DETAILS =====
+                foreach (var item in invoice.items)
+                {
+                    string detailQuery = @"
+                    INSERT INTO InvoiceDetails
+                    (InvoiceMasterId, hsCode, productDescription, rate, uoM, quantity,
+                     valueSalesExcludingsST, fixedNotifiedValueOrRetailPrice,
+                     salesTaxApplicable, salesTaxWithheldAtSource,
+                     extraTax, furtherTax, sroScheduleNo, fedPayable,
+                     discount, saleType, sroItemSerialNo, totalValues)
+                    VALUES
+                    (@InvoiceMasterId, @hsCode, @productDescription, @rate, @uoM, @quantity,
+                     @valueSalesExcludingsST, @fixedNotifiedValueOrRetailPrice,
+                     @salesTaxApplicable, @salesTaxWithheldAtSource,
+                     @extraTax, @furtherTax, @sroScheduleNo, @fedPayable,
+                     @discount, @saleType, @sroItemSerialNo, @totalValues);";
+
+                    using (SQLiteCommand cmd = new SQLiteCommand(detailQuery, MyConnection))
+                    {
+                        cmd.Parameters.AddWithValue("@InvoiceMasterId", masterId);
+
+                        cmd.Parameters.AddWithValue("@hsCode", item.hsCode);
+                        cmd.Parameters.AddWithValue("@productDescription", item.productDescription);
+                        cmd.Parameters.AddWithValue("@rate", item.rate);
+                        cmd.Parameters.AddWithValue("@uoM", item.uoM);
+                        cmd.Parameters.AddWithValue("@quantity", item.quantity);
+
+                        cmd.Parameters.AddWithValue("@valueSalesExcludingsST", item.valueSalesExcludingsST);
+                        cmd.Parameters.AddWithValue("@fixedNotifiedValueOrRetailPrice", item.fixedNotifiedValueOrRetailPrice);
+                        cmd.Parameters.AddWithValue("@salesTaxApplicable", item.salesTaxApplicable);
+                        cmd.Parameters.AddWithValue("@salesTaxWithheldAtSource", item.salesTaxWithheldAtSource);
+
+                        cmd.Parameters.AddWithValue("@extraTax", item.extraTax);
+                        cmd.Parameters.AddWithValue("@furtherTax", item.furtherTax);
+                        cmd.Parameters.AddWithValue("@sroScheduleNo", item.sroScheduleNo);
+                        cmd.Parameters.AddWithValue("@fedPayable", item.fedPayable);
+
+                        cmd.Parameters.AddWithValue("@discount", item.discount);
+                        cmd.Parameters.AddWithValue("@saleType", item.saleType);
+                        cmd.Parameters.AddWithValue("@sroItemSerialNo", item.sroItemSerialNo);
+                        cmd.Parameters.AddWithValue("@totalValues", item.totalValues);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Save Error: " + ex.Message);
+            }
+            finally
+            {
+                if (MyConnection.State == ConnectionState.Open)
+                    MyConnection.Close();
+            }
         }
 
         public DataTable GetDataTable(string tableName)
