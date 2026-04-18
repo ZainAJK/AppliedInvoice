@@ -1,7 +1,9 @@
-﻿using AppliedInvoice.Logic;
-using AppliedInvoice.Logic.Enums;
+﻿using AppliedInvoice;
+using AppliedInvoice.Logic;
 using AppliedInvoice.Logic.Models;
 using AppliedInvoice.Services;
+using Enums = AppliedInvoice.Logic.Enums;
+
 
 
 namespace AppliedInvoice.Models
@@ -69,7 +71,7 @@ namespace AppliedInvoice.Models
             ReqInvoice.buyerRegisterationType = BuyerProfile.buyerRegisterationType.ToString();
 
             ReqInvoice.invoiceRefNo = AppliedVoucher.Master.Vou_No;
-            ReqInvoice.scenarioId = ((AppEnums.ScenarioID)AppEnums.ScenarioType.Standard_rated_supplies).ToString();  // Sale Invoice
+            ReqInvoice.scenarioId = ((Enums.AppEnums.ScenarioID)Enums.AppEnums.ScenarioType.Standard_rated_supplies).ToString();  // Sale Invoice
             foreach (var item in AppliedVoucher.Details)
             {
                 var _Product = InvoiceItems!.FirstOrDefault(p => p.ExtID == item.Inventory);
