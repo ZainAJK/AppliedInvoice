@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace AppliedInvoice.Models
 {
-    public class AppModels
-    {
-    }
-
+    
     public class InvoiceMaster
     {
         public string? invoiceType { get; set; }
@@ -29,7 +24,7 @@ namespace AppliedInvoice.Models
 
         public string? scenarioId { get; set; }
 
-        public List<InvoiceDetails> items { get; set; }
+        public List<InvoiceDetails> items { get; set; } = [];
     }
 
     public class InvoiceDetails
@@ -79,7 +74,7 @@ namespace AppliedInvoice.Models
         public string field { get; set; }
         public string error { get; set; }
     }
-  
- 
+
     
+
 }
