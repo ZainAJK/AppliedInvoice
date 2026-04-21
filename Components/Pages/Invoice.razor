@@ -12,6 +12,31 @@
         <p class="text-muted mb-0">Professional Invoice Management System</p>
     </div>
 
+
+    @if(MyErrors.Count > 0)
+    {
+        foreach (string error in MyLogs)
+        {
+            <div class="alert alert-danger" role="alert">
+                @error
+            </div>
+        }
+    }
+    else
+    {
+        @if (MyLogs.Count > 0)
+        {
+            foreach (string msg in MyLogs)
+            {
+                <div class="alert alert-info" role="alert">
+                    @msg
+                </div>
+            }
+        }
+        
+    }
+
+   
     <EditForm Model="invoice">
 
         <!-- MASTER -->
@@ -367,6 +392,7 @@
                 <tbody>
                     @for (int i = 0; i < invoice.items.Count; i++)
                     {
+                        string _RecordID = invoice.items[i].recID.ToString();
                         <tr>
                             <td>@invoice.items[i].productDescription</td>
                             <td>@invoice.items[i].rate</td>
@@ -374,8 +400,12 @@
                             <td>@invoice.items[i].salesTaxApplicable</td>
                             <td class="fw-bold text-success">@invoice.items[i].totalValues</td>
                             <td>
+                                <button class="btn btn-primary btn-sm"
+                                        @onclick="() => EditItem(_RecordID)">
+                                    Edit Item
+                                </button>
                                 <button class="btn btn-danger btn-sm"
-                                        @onclick="() => DeleteItem(i)">
+                                        @onclick="() => DeleteItem(_RecordID)">
                                     Delete
                                 </button>
                             </td>
@@ -400,6 +430,11 @@
             <button class="btn btn-primary btn-lg px-4 shadow" @onclick="Save">
                 💾 Save Invoice
             </button>
+
+            <button class="btn btn-primary btn-lg px-4 shadow" @onclick="Temp">
+                 Temp
+            </button>
+
 
         </div>
 

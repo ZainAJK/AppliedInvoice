@@ -34,6 +34,7 @@ namespace AppliedInvoice.Models
 
     public class InvoiceDetails
     {
+        public Guid recID { get; set; }
         public string? hsCode { get; set; }
         public string? productDescription { get; set; }
         public decimal rate { get; set; }
