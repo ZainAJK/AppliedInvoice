@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<PdfService>();
+builder.Services.AddScoped<FbrService>();
 
 var dbPath = Path.Combine(
     builder.Environment.WebRootPath, // 👈 this points to wwwroot

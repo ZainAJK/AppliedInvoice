@@ -18,12 +18,12 @@ namespace AppliedInvoice.Components.Pages
         public List<string> MyErrors { get; set; } = new();
 
 
-        InvoiceMaster invoice = new InvoiceMaster()
+        FbrInvoice invoice = new FbrInvoice()
         {
-            items = new List<InvoiceDetails>()
+            items = new List<FbrInvoiceItems>()
         };
 
-        InvoiceDetails currentItem = new InvoiceDetails();
+        FbrInvoiceItems currentItem = new FbrInvoiceItems();
 
         FbrResponse ApiResponse = new();
         bool IsFbrResponse { get; set; }
@@ -33,7 +33,7 @@ namespace AppliedInvoice.Components.Pages
             //CalculateCurrentItem();
             invoice.items ??= new();
             invoice.items.Add(currentItem);
-            currentItem = new InvoiceDetails();
+            currentItem = new FbrInvoiceItems();
         }
 
         public void CalculateCurrentItem()

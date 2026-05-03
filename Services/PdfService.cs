@@ -8,7 +8,7 @@ namespace AppliedInvoice.Services
     public class PdfService
     {
 
-        public void GenerateInvoice(InvoiceMaster invoice)
+        public void GenerateInvoice(FbrInvoice invoice)
         {
 
             string folder = Path.Combine(Directory.GetCurrentDirectory(), "Invoices");
