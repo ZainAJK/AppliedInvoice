@@ -1,0 +1,245 @@
+﻿@page "/testinvoice"
+
+@using AppliedInvoice.Models
+@using AppliedInvoice.Services
+@inject FbrService fbrService
+
+@code {
+
+    public FbrInvoice testInvoice { get; set; } = new();
+    public FbrResponse ApiResponse { get; set; } = new FbrResponse();
+
+    public bool IsResponse = false;
+    public bool IsSubmitting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        testInvoice = await fbrService.GetInvoiceFromAppSettingsAsync();
+
+        testInvoice ??= new FbrInvoice();
+        testInvoice.items ??= testInvoice.items ?? [];
+    }
+
+    public async Task SubmitInvoice()
+    {
+        if (IsSubmitting) return;
+
+        IsSubmitting = true;
+        IsResponse = false;
+
+        try
+        {
+            ApiResponse = await fbrService.SubmitInvoiceAsync(testInvoice);
+            IsResponse = ApiResponse != null;
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+    }
+}
+
+<EditForm Model="@testInvoice" OnSubmit="SubmitInvoice" FormName="invoiceform">
+    
+    <div class="container">
+
+        <!-- INVOICE HEADER -->
+        <div class="card mb-3">
+            <div class="card-header">Invoice Details</div>
+            <div class="card-body">
+
+                <div class="row mb-2">
+                    <div class="col-3">Invoice Type</div>
+                    <div class="col-9">
+                        <InputText class="form-control"
+                                   @bind-Value="testInvoice.invoiceType" />
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-3">Invoice Date</div>
+                    <div class="col-9">
+                        <InputDate class="form-control"
+                                   @bind-Value="testInvoice.invoiceDate" />
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-3">Reference No</div>
+                    <div class="col-9">
+                        <InputText class="form-control"
+                                   @bind-Value="testInvoice.invoiceRefNo" />
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-3">Scenario ID</div>
+                    <div class="col-9">
+                        <InputText class="form-control"
+                                   @bind-Value="testInvoice.scenarioId" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SELLER -->
+        <div class="card mb-3">
+            <div class="card-header">Seller Information</div>
+            <div class="card-body">
+
+                <InputText class="form-control mb-2"
+                           placeholder="NTN/CNIC"
+                           @bind-Value="testInvoice.sellerNTNCNIC" />
+
+                <InputText class="form-control mb-2"
+                           placeholder="Business Name"
+                           @bind-Value="testInvoice.sellerBusinessName" />
+
+                <InputText class="form-control mb-2"
+                           placeholder="Province"
+                           @bind-Value="testInvoice.sellerProvince" />
+
+                <InputText class="form-control"
+                           placeholder="Address"
+                           @bind-Value="testInvoice.sellerAddress" />
+
+            </div>
+        </div>
+
+        <!-- BUYER -->
+        <div class="card mb-3">
+            <div class="card-header">Buyer Information</div>
+            <div class="card-body">
+
+                <InputText class="form-control mb-2"
+                           placeholder="NTN/CNIC"
+                           @bind-Value="testInvoice.buyerNTNCNIC" />
+
+                <InputText class="form-control mb-2"
+                           placeholder="Business Name"
+                           @bind-Value="testInvoice.buyerBusinessName" />
+
+                <InputText class="form-control mb-2"
+                           placeholder="Province"
+                           @bind-Value="testInvoice.buyerProvince" />
+
+                <InputText class="form-control"
+                           placeholder="Address"
+                           @bind-Value="testInvoice.buyerAddress" />
+
+            </div>
+        </div>
+
+        <!-- ITEMS -->
+       @*  <div class="card mb-3">
+            <div class="card-header">Items</div>
+            <div class="card-body">
+
+                @if (testInvoice.items != null)
+                {
+                    @for (int i = 0; i < testInvoice.items.Count; i++)
+                    {
+                        <div class="border p-3 mb-3">
+
+                            <InputText class="form-control mb-2"
+                                       placeholder="HS Code"
+                                       @bind-Value="testInvoice.items[i].hsCode" />
+
+                            <InputText class="form-control mb-2"
+                                       placeholder="Description"
+                                       @bind-Value="testInvoice.items[i].productDescription" />
+
+                            <InputText class="form-control mb-2"
+                                       placeholder="Rate"
+                                       @bind-Value="testInvoice.items[i].rate" />
+
+                            <InputText class="form-control mb-2"
+                                       placeholder="UOM"
+                                       @bind-Value="testInvoice.items[i].uoM" />
+
+                            <InputNumber class="form-control mb-2"
+                                         @bind-Value="testInvoice.items[i].quantity" />
+
+                            <InputNumber class="form-control"
+                                         @bind-Value="testInvoice.items[i].totalValues" />
+
+                        </div>
+                    }
+                }
+
+            </div>
+        </div> *@
+
+        <!-- SUBMIT -->
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary" disabled="@IsSubmitting">
+                @(IsSubmitting ? "Submitting..." : "Submit Invoice")
+            </button>
+        </div>
+
+    </div>
+</EditForm>
+
+<br />
+
+@if (IsResponse)
+{
+    <div class="container">
+
+        <div class="row">
+            <div class="col-3">Status Code</div>
+            <div class="col-8">@ApiResponse?.statusCode</div>
+
+            <div class="col-3">Status</div>
+            <div class="col-8">@ApiResponse?.status</div>
+
+            <div class="col-3">Message</div>
+            <div class="col-8">@ApiResponse?.message</div>
+
+            <div class="col-3">Invoice Number</div>
+            <div class="col-8">@ApiResponse?.invoiceNumber</div>
+
+            <div class="col-3">QR Code</div>
+            <div class="col-8">@ApiResponse?.qrCode</div>
+
+            <div class="col-3">Error Details</div>
+            <div class="col-8">@ApiResponse?.errorDetails</div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Error</th>
+                    <th>Field</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ApiResponse!.validationResponse != null)
+                {
+                    if (ApiResponse.validationResponse.invoiceStatuses != null)
+                    {
+                        foreach (var item in ApiResponse.validationResponse.invoiceStatuses)
+                        {
+                            <tr>
+                                <td>@item.error</td>
+                                <td>@item.errorCode</td>
+                                <td>@item.status</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@ApiResponse.validationResponse.error</td>
+                            <td>@ApiResponse.validationResponse.statusCode</td>
+                            <td>@ApiResponse.validationResponse.status</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+}

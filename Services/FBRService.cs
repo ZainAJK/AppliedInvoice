@@ -40,9 +40,28 @@ namespace AppliedInvoice.Services
                 throw new Exception($"FBR Error: {json}");
             }
 
-            return JsonSerializer.Deserialize<FbrResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                AllowTrailingCommas = true
+            };
+
+
+            var _result =  JsonSerializer.Deserialize<FbrResponse>(json, options)!;
+            return _result;
         }
 
+        public async Task<FbrInvoice> GetInvoiceFromAppSettingsAsync()
+        {
+            var inv = _config.GetSection("FbrInvoice").Get<FbrInvoice>();
+            if (inv == null)
+                throw new Exception("FbrInvoice section not found in appsettings.json");
+            // Set runtime values here (IMPORTANT)
+            inv.invoiceDate = DateTime.Now;
+            // Optional: override invoice ref dynamically
+            inv.invoiceRefNo = "INV-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            return inv;
+        }
 
 
 

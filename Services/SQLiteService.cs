@@ -53,7 +53,7 @@ namespace AppliedInvoice.Services
                 Row_Detail["uoM"] = item.uoM;
                 Row_Detail["quantity"] = item.quantity;
 
-                Row_Detail["valueSalesExcludingsST"] = item.valueSalesExcludingsST;
+                Row_Detail["valueSalesExcludingsST"] = item.valueSalesExcludingST;
                 Row_Detail["fixedNotifiedValueOrRetailPrice"] = item.fixedNotifiedValueOrRetailPrice;
                 Row_Detail["salesTaxApplicable"] = item.salesTaxApplicable;
                 Row_Detail["salesTaxWithheldAtSource"] = item.salesTaxWithheldAtSource;
@@ -139,7 +139,7 @@ namespace AppliedInvoice.Services
                         cmd.Parameters.AddWithValue("@uoM", item.uoM);
                         cmd.Parameters.AddWithValue("@quantity", item.quantity);
 
-                        cmd.Parameters.AddWithValue("@valueSalesExcludingsST", item.valueSalesExcludingsST);
+                        cmd.Parameters.AddWithValue("@valueSalesExcludingST", item.valueSalesExcludingST);
                         cmd.Parameters.AddWithValue("@fixedNotifiedValueOrRetailPrice", item.fixedNotifiedValueOrRetailPrice);
                         cmd.Parameters.AddWithValue("@salesTaxApplicable", item.salesTaxApplicable);
                         cmd.Parameters.AddWithValue("@salesTaxWithheldAtSource", item.salesTaxWithheldAtSource);

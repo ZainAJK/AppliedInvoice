@@ -31,23 +31,25 @@ namespace AppliedInvoice.Components.Pages
 
         public void CalculateCurrentItem()
         {
-            if (currentItem.rate < 0)
-                currentItem.rate = 0;
+            var rate = Convert.ToDecimal(currentItem.rate.Replace("%", ""));
+
+            if (rate < 0)
+                rate = 0;
 
             if (currentItem.quantity < 0)
                 currentItem.quantity = 0;
 
-            decimal baseTotal = currentItem.rate * currentItem.quantity;
+            decimal baseTotal = rate * currentItem.quantity;
 
-            if (currentItem.valueSalesExcludingsST == 0)
+            if (currentItem.valueSalesExcludingST == 0)
             {
-                currentItem.valueSalesExcludingsST = baseTotal;
+                currentItem.valueSalesExcludingST = baseTotal;
             }
 
             if (currentItem.salesTaxApplicable == 0)
             {
                 currentItem.salesTaxApplicable =
-                    currentItem.valueSalesExcludingsST * 0.18M;
+                    currentItem.valueSalesExcludingST * 0.18M;
             }
 
             if (currentItem.extraTax < 0)
