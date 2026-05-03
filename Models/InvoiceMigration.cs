@@ -14,7 +14,7 @@ namespace AppliedInvoice.Models
         public SellerProfileModel? SellerProfile { get; set; }
         public BuyerProfileModel? BuyerProfile { get; set; }
         public List<ProductItemModel>? InvoiceItems { get; set; }
-        public InvoiceMaster ReqInvoice { get; set; } = new();
+        public FbrInvoice ReqInvoice { get; set; } = new();
         public List<string> Errors { get; set; } = new();
         public FBRDataService Source { get; set; }
 
@@ -43,7 +43,7 @@ namespace AppliedInvoice.Models
 
         }
 
-        public InvoiceMaster? MigrateInvoice()
+        public FbrInvoice? MigrateInvoice()
         {
 
             #region Validatation of invoice data
@@ -83,7 +83,7 @@ namespace AppliedInvoice.Models
                 var _salesTaxApplicable = _valueSalesExcludingsST * item.TaxRate;
                 var _salesTaxWithheldAtSource = _valueSalesExcludingsST * item.STHoldRate;  // Currently not available in AppliedAccountsModel.Detail, need to be calculated based on business logic and scenario
 
-                InvoiceDetails details = new InvoiceDetails
+                FbrInvoiceItems details = new FbrInvoiceItems
                 {
                     hsCode = _Product!.hsCode,
                     productDescription = _Product!.productDescription,

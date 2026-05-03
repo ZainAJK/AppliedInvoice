@@ -2,7 +2,7 @@
 namespace AppliedInvoice.Models
 {
     
-    public class InvoiceMaster
+    public class FbrInvoice
     {
         public string? invoiceType { get; set; }
 
@@ -24,10 +24,10 @@ namespace AppliedInvoice.Models
 
         public string? scenarioId { get; set; }
 
-        public List<InvoiceDetails> items { get; set; } = [];
+        public List<FbrInvoiceItems> items { get; set; } = [];
     }
 
-    public class InvoiceDetails
+    public class FbrInvoiceItems
     {
         public string? hsCode { get; set; }
         public string? productDescription { get; set; }

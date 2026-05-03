@@ -9,8 +9,8 @@ namespace AppliedInvoice.Services
         {
         }
 
-        public DbSet<InvoiceMaster> Invoices { get; set; }
-        public DbSet<InvoiceDetails> InvoiceDetails { get; set; }
+        public DbSet<FbrInvoice> Invoices { get; set; }
+        public DbSet<FbrInvoiceItems> InvoiceDetails { get; set; }
 
       //  protected override void OnModelCreating(ModelBuilder modelBuilder)
        // {

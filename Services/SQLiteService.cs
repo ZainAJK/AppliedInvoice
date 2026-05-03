@@ -19,7 +19,7 @@ namespace AppliedInvoice.Services
             MyConnection = new SQLiteConnection($"Data Source={dbPath};");
         }
 
-        public void SaveInvoice(InvoiceMaster invoice)
+        public void SaveInvoice(FbrInvoice invoice)
         {
 
             DataTable Inv_Master = GetDataTable("InvoiceMaster"); 

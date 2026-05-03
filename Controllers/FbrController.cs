@@ -16,7 +16,7 @@ namespace AppliedInvoice.Controllers
         }
 
         [HttpPost("submit-invoice")]
-        public async Task<IActionResult> SubmitInvoice([FromBody] InvoiceMaster model)
+        public async Task<IActionResult> SubmitInvoice([FromBody] FbrInvoice model)
         {
             if (model == null || model.items.Count == 0)
             {

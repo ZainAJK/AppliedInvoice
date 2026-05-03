@@ -1,31 +1,30 @@
 ﻿using AppliedInvoice.Models;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using AppliedInvoice.Logic.Models;
 
 namespace AppliedInvoice.Services
 {
     public class FbrService
     {
-        private readonly HttpClient _httpClient;
         private readonly IConfiguration _config;
+        private readonly HttpClient _httpClient;
 
-        public FbrService(HttpClient httpClient, IConfiguration config)
+        public FbrService(IConfiguration config)
         {
-            _httpClient = httpClient;
             _config = config;
+            _httpClient = new HttpClient(); // manually created
         }
 
-        public async Task<FbrResponse> SubmitInvoiceAsync(FBRRequestModel invoice)
+        public async Task<FbrResponse> SubmitInvoiceAsync(FbrInvoice invoice)
         {
             var url = _config["FBR:BaseUrl"]; // e.g sandbox/prod
+            var tokenPost = _config["FBR:TokenPost"]; // your token
 
             var request = new HttpRequestMessage(HttpMethod.Post, url);
-
-            // Headers (VERY IMPORTANT)
-            request.Headers.Add("Authorization", $"Bearer {_config["FBR:Token"]}");
-            request.Headers.Add("Client-Id", _config["FBR:ClientId"]);
-            request.Headers.Add("Client-Secret", _config["FBR:ClientSecret"]);
+            request.Headers.Add("Authorization", $"Bearer {tokenPost}");
+            //request.Headers.Add("Client-Id", _config["FBR:ClientId"]);
+            //request.Headers.Add("Client-Secret", _config["FBR:ClientSecret"]);
 
             request.Content = new StringContent(
                 JsonSerializer.Serialize(invoice),
@@ -41,8 +40,44 @@ namespace AppliedInvoice.Services
                 throw new Exception($"FBR Error: {json}");
             }
 
-            return JsonSerializer.Deserialize<FbrResponse>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return JsonSerializer.Deserialize<FbrResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
+
+
+
+
+
+
+        // Copy from FBR web site, not used in code, just for reference
+        public void PostInvoiceData(FbrInvoice objinvoice)
+        {
+
+            var url = _config["FBR:BaseUrl"]; // e.g sandbox/prod
+            var TokenPost = _config["FBR:TokenPost"]; // your token
+
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenPost);
+            StringContent content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(objinvoice), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+
+
+            if (response.IsSuccessStatusCode)
+
+            {
+
+                Console.WriteLine("Response from API:");
+
+                Console.WriteLine("-------------------------------");
+
+                Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+
+            }
+        }
+
     }
 }
+
+
