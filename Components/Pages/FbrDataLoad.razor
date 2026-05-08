@@ -1,0 +1,383 @@
+﻿@page "/fbr-api"
+
+@using System.Text.Json
+@using AppliedInvoice.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using AppliedInvoice.Services
+@inject FbrService ApiService
+
+
+<PageTitle>FBR API Testing</PageTitle>
+
+<h3 class="mb-4">FBR API Testing V1.0</h3>
+
+<div class="row">
+
+    <!-- LEFT PANEL -->
+    <div class="col-md-4">
+
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                Reference APIs
+            </div>
+
+            <div class="card-body">
+
+                <button class="btn btn-primary w-100 mb-2"
+                        @onclick="LoadProvinces">
+                    Provinces
+                </button>
+
+                <button class="btn btn-primary w-100 mb-2"
+                        @onclick="LoadDocTypes">
+                    Document Types
+                </button>
+
+                <button class="btn btn-primary w-100 mb-2"
+                        @onclick="LoadItemCodes">
+                    Item Codes
+                </button>
+
+                <button class="btn btn-primary w-100 mb-2"
+                        @onclick="LoadUom">
+                    UOM
+                </button>
+
+                <button class="btn btn-primary w-100 mb-2"
+                        @onclick="LoadTransactionTypes">
+                    Transaction Types
+                </button>
+                <button class="btn btn-primary w-100 mb-2"
+                        @onclick="(async ()=> await GetRegisterType())">
+                    Buyer Registration Type
+                </button>
+
+            </div>
+        </div>
+
+        <!-- RATE -->
+        <div class="card shadow-sm mb-3">
+
+            <div class="card-header">
+                Rate API
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-2">
+                    <label>Date</label>
+                    <InputDate class="form-control"
+                               @bind-Value="RateDate" />
+                </div>
+
+                <div class="mb-2">
+                    <label>Transaction Type Id</label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="TransTypeId" />
+                </div>
+
+                <div class="mb-2">
+                    <label>Origination Supplier</label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="OriginationSupplier" />
+                </div>
+
+                <button class="btn btn-success w-100"
+                        @onclick="LoadRate">
+                    Load Rate
+                </button>
+
+            </div>
+        </div>
+
+        <!-- HS UOM -->
+        <div class="card shadow-sm mb-3">
+
+            <div class="card-header">
+                HS UOM API
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-2">
+                    <label>HS Code</label>
+                    <InputText class="form-control"
+                               @bind-Value="HsCode" />
+                </div>
+
+                <div class="mb-2">
+                    <label>Annexure Id</label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="AnnexureId" />
+                </div>
+
+                <button class="btn btn-success w-100"
+                        @onclick="LoadHsUom">
+                    Load HS UOM
+                </button>
+
+            </div>
+        </div>
+
+        <!-- SRO ITEM -->
+        <div class="card shadow-sm mb-3">
+
+            <div class="card-header">
+                SRO Item API
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-2">
+                    <label>Date</label>
+                    <InputDate class="form-control"
+                               @bind-Value="SroDate" />
+                </div>
+
+                <div class="mb-2">
+                    <label>SRO Id</label>
+                    <InputNumber class="form-control"
+                                 @bind-Value="SroId" />
+                </div>
+
+                <button class="btn btn-success w-100"
+                        @onclick="LoadSroItem">
+                    Load SRO Item
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="col-md-8">
+
+        <!-- INVOICE -->
+        <div class="card shadow-sm mb-3">
+
+            <div class="card-header">
+                Invoice API
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-3">
+                    <label>Invoice JSON</label>
+
+                    <InputTextArea class="form-control"
+                                   rows="18"
+                                   @bind-Value="InvoiceJson" />
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <button class="btn btn-warning w-100"
+                                @onclick="ValidateInvoice">
+                            Validate Invoice
+                        </button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <button class="btn btn-danger w-100"
+                                @onclick="PostInvoice">
+                            Post Invoice
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RESPONSE -->
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+                API Response
+            </div>
+
+            <div class="card-body">
+
+                <pre style="height:700px; overflow:auto;">@ResponseText</pre>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+
+    private HttpClient Http = new HttpClient();
+
+    public string ResponseText { get; set; }
+
+    public string InvoiceJson { get; set; }
+
+    // RATE
+    public DateTime RateDate { get; set; } = DateTime.Today;
+
+    public int TransTypeId { get; set; } = 18;
+
+    public int OriginationSupplier { get; set; } = 1;
+
+    // HS UOM
+    public string HsCode { get; set; } = "5904.9000";
+
+    public int AnnexureId { get; set; } = 3;
+
+    // SRO
+    public DateTime SroDate { get; set; } = DateTime.Today;
+
+    public int SroId { get; set; } = 389;
+
+    protected override void OnInitialized()
+    {
+        //https://gw.fbr.gov.pk/dist/v1/Get_Reg_Type
+        //https://gw.fbr.gov.pk/dist/v1/
+        Http.BaseAddress = new Uri("https://localhost:7079/");
+
+    }
+
+    // -----------------------------
+    // REFERENCE APIs
+    // -----------------------------
+
+    async Task LoadProvinces()
+    {
+        //
+        ResponseText =
+            await Http.GetStringAsync("api/FbrController2/provinces");
+    }
+
+    async Task LoadDocTypes()
+    {
+        ResponseText =
+            await Http.GetStringAsync("api/FbrController2/doctype");
+    }
+
+    async Task LoadItemCodes()
+    {
+        ResponseText =
+            await Http.GetStringAsync("api/FbrController2/itemcodes");
+    }
+
+    async Task LoadUom()
+    {
+        ResponseText =
+            await Http.GetStringAsync("api/FbrController2/uom");
+    }
+
+    async Task LoadTransactionTypes()
+    {
+        ResponseText =
+            await Http.GetStringAsync("api/FbrController2/transtype");
+    }
+
+    // -----------------------------
+    // RATE
+    // -----------------------------
+
+    async Task LoadRate()
+    {
+        var url =
+            $"api/FbrController2/rate?date={RateDate:yyyy-MM-dd}" +
+            $"&transTypeId={TransTypeId}" +
+            $"&originationSupplier={OriginationSupplier}";
+
+        ResponseText = await Http.GetStringAsync(url);
+    }
+
+    // -----------------------------
+    // HS UOM
+    // -----------------------------
+
+    async Task LoadHsUom()
+    {
+        var url =
+            $"api/FbrController2/hsuom?hsCode={HsCode}" +
+            $"&annexureId={AnnexureId}";
+
+        ResponseText = await Http.GetStringAsync(url);
+    }
+
+    // -----------------------------
+    // SRO ITEM
+    // -----------------------------
+
+    async Task LoadSroItem()
+    {
+        var url =
+            $"api/FbrController2/sroitem?date={SroDate:yyyy-MM-dd}" +
+            $"&sroId={SroId}";
+
+        ResponseText = await Http.GetStringAsync(url);
+    }
+
+    // -----------------------------
+    // VALIDATE
+    // -----------------------------
+
+    async Task ValidateInvoice()
+    {
+        try
+        {
+            var invoice =
+                JsonSerializer.Deserialize<FbrInvoice>(InvoiceJson);
+
+            var response =
+                await Http.PostAsJsonAsync(
+                    "api/FbrController2/validateinvoice",
+                    invoice);
+
+            ResponseText =
+                await response.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            ResponseText = ex.Message;
+        }
+    }
+
+    // -----------------------------
+    // POST
+    // -----------------------------
+
+    async Task PostInvoice()
+    {
+        try
+        {
+            var invoice =
+                JsonSerializer.Deserialize<FbrInvoice>(InvoiceJson);
+
+            var response =
+                await Http.PostAsJsonAsync(
+                    "api/FbrController2/postinvoice",
+                    invoice);
+
+            ResponseText =
+                await response.Content.ReadAsStringAsync();
+        }
+        catch (Exception ex)
+        {
+            ResponseText = ex.Message;
+        }
+    }
+
+
+    private async Task GetRegisterType()
+    {
+        try
+        {
+            var _response = await ApiService.GetRegistrationTypeAsync("1761600");
+            ResponseText = $"{_response.REGISTRATION_NO} : {_response.REGISTRATION_TYPE}";
+        }
+        catch (Exception ex)
+        {
+            ResponseText = ex.Message;
+        }
+    }
+}

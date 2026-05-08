@@ -1,6 +1,7 @@
 using AppliedInvoice.Components;
 using AppliedInvoice.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,19 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
 
 builder.Services.AddSingleton<SQLiteService>();
+
+var config = builder.Configuration;
+var baseUrl = config["FBR:BaseUrl"];
+var fbrGetToken = config["FBR:TokenGet"];
+var fbrPostToken = config["FBR:TokenPost"];
+
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    client.BaseAddress = new Uri(baseUrl!);
+    client.Timeout = TimeSpan.FromSeconds(30);
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", fbrGetToken);
+    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+});
 
 var app = builder.Build();
 
