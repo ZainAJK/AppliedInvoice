@@ -93,6 +93,43 @@ namespace AppliedInvoice.Models
         public string error { get; set; }
     }
 
-    
+    public class ProvinceModel
+    {
+        public int StateProvinceCode { get; set; }
+
+        public string StateProvinceDesc { get; set; }
+    }
+
+    public class DocTypeModel
+    {
+        public int DocTypeId { get; set; }
+
+        public string DocDescription { get; set; }
+    }
+
+    public class UomModel
+    {
+        public int UoM_ID { get; set; }
+
+        public string Description { get; set; }
+    }
+
+    public class RateModel
+    {
+        public int RATE_ID { get; set; }
+
+        public string RATE_DESC { get; set; }
+
+        public decimal RATE_VALUE { get; set; }
+    }
+
+
+    public class RegStateResponse
+    {
+        public string statuscode { get; set; }
+        public string REGISTRATION_NO { get; set; }
+        public string REGISTRATION_TYPE { get; set; }
+    }
+
 
 }

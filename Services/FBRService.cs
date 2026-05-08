@@ -7,25 +7,22 @@ namespace AppliedInvoice.Services
 {
     public class FbrService
     {
-        private readonly IConfiguration _config;
-        private readonly HttpClient _httpClient;
+        public readonly IConfiguration _config;
+        public readonly HttpClient _httpClient;
 
-        public FbrService(IConfiguration config)
+        public FbrService(IConfiguration config, IHttpClientFactory factory)
         {
             _config = config;
-            _httpClient = new HttpClient(); // manually created
+            _httpClient = factory.CreateClient("ApiClient");
         }
 
+
+        // Test Invoice Data
         public async Task<FbrResponse> SubmitInvoiceAsync(FbrInvoice invoice)
         {
-            var url = _config["FBR:BaseUrl"]; // e.g sandbox/prod
-            var tokenPost = _config["FBR:TokenPost"]; // your token
-
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-            request.Headers.Add("Authorization", $"Bearer {tokenPost}");
-            //request.Headers.Add("Client-Id", _config["FBR:ClientId"]);
-            //request.Headers.Add("Client-Secret", _config["FBR:ClientSecret"]);
-
+       
+            var request = new HttpRequestMessage(HttpMethod.Post, _httpClient.BaseAddress); ;
+            
             request.Content = new StringContent(
                 JsonSerializer.Serialize(invoice),
                 Encoding.UTF8,
@@ -47,13 +44,15 @@ namespace AppliedInvoice.Services
             };
 
 
-            var _result =  JsonSerializer.Deserialize<FbrResponse>(json, options)!;
+            var _result = JsonSerializer.Deserialize<FbrResponse>(json, options)!;
             return _result;
         }
 
+
+        // Get Invoice Json Text from appsetting.json file
         public async Task<FbrInvoice> GetInvoiceFromAppSettingsAsync()
         {
-            var inv = _config.GetSection("FbrInvoice").Get<FbrInvoice>();
+            var inv = _config.GetSection("FbrValidate_sb").Get<FbrInvoice>();
             if (inv == null)
                 throw new Exception("FbrInvoice section not found in appsettings.json");
             // Set runtime values here (IMPORTANT)
@@ -63,8 +62,76 @@ namespace AppliedInvoice.Services
             return inv;
         }
 
+        private void SetHeaders()
+        {
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _config["FBR:Token"]);
+        }
 
+        public async Task<string> PostInvoiceAsync(FbrInvoice invoice)
+        {
+            SetHeaders();
 
+            var json = JsonSerializer.Serialize(invoice);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(_config["FBR:PostInvoiceUrl"], content);
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> ValidateInvoiceAsync(FbrInvoice invoice)
+        {
+            SetHeaders();
+
+            var json = JsonSerializer.Serialize(invoice);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(_config["FBR:ValidateInvoiceUrl"], content);
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> GetAsync(string url)
+        {
+            SetHeaders();
+            return await _httpClient.GetStringAsync(url);
+        }
+
+        public async Task<RegStateResponse> GetRegistrationTypeAsync(string NTN_CNIC)
+        {
+            var sendBoxUrl = "https://gw.fbr.gov.pk/dist/v1/Get_Reg_Type";
+
+            var requestObject = new
+            {
+                Registration_No = NTN_CNIC
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, sendBoxUrl)
+            {
+                Content = new StringContent(
+                    JsonSerializer.Serialize(requestObject),
+                    Encoding.UTF8,
+                    "application/json")
+            };
+
+            var response = await _httpClient.SendAsync(request);
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"FBR Error: {json}");
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                AllowTrailingCommas = true
+            };
+
+            var result = JsonSerializer.Deserialize<RegStateResponse>(json, options);
+
+            return result!;
+        }
 
 
         // Copy from FBR web site, not used in code, just for reference
