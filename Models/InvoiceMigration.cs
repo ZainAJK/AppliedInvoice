@@ -87,11 +87,11 @@ namespace AppliedInvoice.Models
                 {
                     hsCode = _Product!.hsCode,
                     productDescription = _Product!.productDescription,
-                    rate = item.Rate,
+                    rate = item.Rate.ToString(),
                     uoM = item.TitleUnit,
                     quantity = item.Qty,
                     totalValues = _totalValue,
-                    valueSalesExcludingsST = _valueSalesExcludingsST,    
+                    valueSalesExcludingST = _valueSalesExcludingsST,    
                     fixedNotifiedValueOrRetailPrice = _retailPrice,                    
                     salesTaxApplicable = _salesTaxApplicable,
                     salesTaxWithheldAtSource = _salesTaxWithheldAtSource,

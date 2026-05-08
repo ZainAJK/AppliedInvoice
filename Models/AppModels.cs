@@ -1,7 +1,11 @@
 ﻿
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+
 namespace AppliedInvoice.Models
 {
-    
+
     public class FbrInvoice
     {
         public string? invoiceType { get; set; }
@@ -32,12 +36,12 @@ namespace AppliedInvoice.Models
         public Guid recID { get; set; }
         public string? hsCode { get; set; }
         public string? productDescription { get; set; }
-        public decimal rate { get; set; }
+        public string rate { get; set; }
         public string? uoM { get; set; }
         public decimal quantity { get; set; }
 
         public decimal totalValues { get; set; }
-        public decimal valueSalesExcludingsST { get; set; }
+        public decimal valueSalesExcludingST { get; set; }
         public decimal fixedNotifiedValueOrRetailPrice { get; set; }
 
         public decimal salesTaxApplicable { get; set; }
@@ -65,13 +69,28 @@ namespace AppliedInvoice.Models
         public string message { get; set; }
         public string invoiceNumber { get; set; }
         public string qrCode { get; set; }
-        public List<ValidationResponse> validationResponse { get; set; }
+
+        public ValidationResponseRoot validationResponse { get; set; }
+
         public string errorDetails { get; set; }
     }
 
-    public class ValidationResponse
+    public class ValidationResponseRoot
     {
-        public string field { get; set; }
+        public string statusCode { get; set; }
+        public string status { get; set; }
+        public string error { get; set; }
+
+        public List<InvoiceStatus> invoiceStatuses { get; set; }
+    }
+
+    public class InvoiceStatus
+    {
+        public string itemSNo { get; set; }
+        public string statusCode { get; set; }
+        public string status { get; set; }
+        public int invoiceNo { get; set; }
+        public string errorCode { get; set; }
         public string error { get; set; }
     }
 

@@ -88,10 +88,193 @@
                 <input @bind="invoice.buyerProvince" />
             </div>
 
-            <div>
-                <label>Buyer Address</label>
-                <input @bind="invoice.buyerAddress" />
-            </div>
+            <div class="card-body bg-light">
+
+                <!-- ROW 1 -->
+                <div class="row g-3">
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputText class="form-control border-success shadow-sm"
+                                       id="hsCode"
+                                       @bind-Value="currentItem.hsCode" />
+                            <label for="hsCode">HS Code</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputText class="form-control border-success shadow-sm"
+                                       id="productDescription"
+                                       @bind-Value="currentItem.productDescription" />
+                            <label for="productDescription">Product Description</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="rate"
+                                         @bind-Value="currentItem.rate"
+                                         @oninput="CalculateCurrentItem" />
+                            <label for="rate">Rate</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-floating">
+                            <InputText class="form-control border-success shadow-sm"
+                                       id="uom"
+                                       @bind-Value="currentItem.uoM" />
+                            <label for="uom">UOM</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="quantity"
+                                         @bind-Value="currentItem.quantity"
+                                         @oninput="CalculateCurrentItem" />
+                            <label for="quantity">Quantity</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ROW 2 -->
+                <div class="row g-3 mt-1">
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="valueExST"
+                                         @bind-Value="currentItem.valueSalesExcludingST" />
+                            <label for="valueExST">Value Excluding ST</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="retailPrice"
+                                         @bind-Value="currentItem.fixedNotifiedValueOrRetailPrice" />
+                            <label for="retailPrice">Retail Price</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="salesTax"
+                                         @bind-Value="currentItem.salesTaxApplicable"
+                                         @oninput="CalculateCurrentItem" />
+                            <label for="salesTax">Sales Tax</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="withholdingTax"
+                                         @bind-Value="currentItem.salesTaxWithheldAtSource" />
+                            <label for="withholdingTax">Withholding Tax</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ROW 3 -->
+                <div class="row g-3 mt-1">
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="extraTax"
+                                         @bind-Value="currentItem.extraTax" />
+                            <label for="extraTax">Extra Tax</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="furtherTax"
+                                         @bind-Value="currentItem.furtherTax" />
+                            <label for="furtherTax">Further Tax</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="sroScheduleNo"
+                                         @bind-Value="currentItem.sroScheduleNo" />
+                            <label for="sroScheduleNo">SRO Schedule No</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="fedPayable"
+                                         @bind-Value="currentItem.fedPayable" />
+                            <label for="fedPayable">FED Payable</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ROW 4 -->
+                <div class="row g-3 mt-1">
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="discount"
+                                         @bind-Value="currentItem.discount"
+                                         @oninput="CalculateCurrentItem" />
+                            <label for="discount">Discount</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputText class="form-control border-success shadow-sm"
+                                       id="saleType"
+                                       @bind-Value="currentItem.saleType" />
+                            <label for="saleType">Sale Type</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputText class="form-control border-success shadow-sm"
+                                       id="sroItemSerialNo"
+                                       @bind-Value="currentItem.sroItemSerialNo" />
+                            <label for="sroItemSerialNo">SRO Item Serial No</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <InputNumber class="form-control border-success shadow-sm"
+                                         id="total"
+                                         @bind-Value="currentItem.totalValues" />
+                            <label for="total">Total</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BUTTON -->
+                <div class="row mt-4">
+                    <div class="col-md-12 d-grid">
+                        <button class="btn btn-success btn-lg fw-semibold shadow" @onclick="AddItem">
+                            Add Item
+                        </button>
+                    </div>
+                </div>
 
             <div>
                 <label>Buyer Registration Type</label>

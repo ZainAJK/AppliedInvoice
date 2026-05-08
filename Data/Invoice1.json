@@ -1,0 +1,38 @@
+{
+  "invoiceType": "Sale",
+  "sellerNTNCNIC": "4200004543153",
+  "sellerBusinessName": "ASHFAQ AHMED ESSANI",
+  "sellerProvince": "Sindh",
+  "sellerAddress": "Office No.102 & 103, First Floor, Plot No 31-C,6th Zamzama Commercial Lane, Phase V, DHA, Karachi",
+
+  "buyerNTNCNIC": "4210111667293",
+  "buyerBusinessName": "Applied Software House",
+  "buyerProvince": "Sindh",
+  "buyerAddress": "Office # 105, Allahabad Tarreace, F.B Area, Karachi",
+
+  "buyerRegisterationType": "Registered",
+  "invoiceRefNo": "INV-001",
+  "scenarioId": "1",
+
+  "items": [
+    {
+      "hsCode": "HS1234",
+      "productDescription": "Product 1",
+      "rate": "18%",
+      "uoM": "Kg",
+      "quantity": 5,
+      "totalValues": 24780,
+      "valueSalesExcludingsST": 21000,
+      "fixedNotifiedValueOrRetailPrice": 0.0,
+      "salesTaxApplicable": 21000,
+      "salesTaxWithheldAtSource": 0,
+      "extraTax": 0,
+      "furtherTax": 0,
+      "sroScheduleNo": 0,
+      "fedPayable": 0,
+      "discount": 0,
+      "saleType": "Local",
+      "sroItemSerialNo": ""
+    }
+  ]
+}
