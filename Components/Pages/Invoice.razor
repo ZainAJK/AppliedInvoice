@@ -1,152 +1,91 @@
 ﻿@page "/invoice"
-@rendermode InteractiveServer
+@using AppliedInvoice.Models
 
-@using AppliedInvoice.Services
-@inject SQLiteService DB
+<h2 class="title">Invoice Entry</h2>
 
-<div class="container-fluid px-4 py-4">
+<div class="invoice-container">
 
-    <!-- HEADER -->
-    <div class="text-center mb-4">
-        <h2 class="fw-bold text-primary">Invoice Entry</h2>
-        <p class="text-muted mb-0">Professional Invoice Management System</p>
-    </div>
+    <div class="section">
 
-    <EditForm Model="invoice">
+        <h3>Invoice Information</h3>
 
-        <!-- MASTER -->
-        <div class="card shadow border-0 mb-4">
+        <div class="grid">
 
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0 fw-semibold">Invoice Detail</h5>
+            <div>
+                <label>Invoice Type</label>
+                <input @bind="invoice.invoiceType" />
             </div>
 
-            <div class="card-body bg-light">
-
-                <div class="row g-3">
-
- 
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="invoiceType"
-                                       @bind-Value="invoice.invoiceType" />
-                            <label>Invoice Type</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <InputDate class="form-control border-primary" id="invoiceDate"
-                                       @bind-Value="invoice.invoiceDate" />
-                            <label>Invoice Date</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="invoiceRefNo"
-                                       @bind-Value="invoice.invoiceRefNo" />
-                            <label>Invoice Ref No</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="scenarioId"
-                                       @bind-Value="invoice.scenarioId" />
-                            <label>Scenario Id</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="sellerNTNCNIC"
-                                       @bind-Value="invoice.sellerNTNCNIC" />
-                            <label>Seller NTN/CNIC</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="sellerBusinessName"
-                                       @bind-Value="invoice.sellerBusinessName" />
-                            <label>Seller Business Name</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="sellerProvince"
-                                       @bind-Value="invoice.sellerProvince" />
-                            <label>Seller Province</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-8">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="sellerAddress"
-                                       @bind-Value="invoice.sellerAddress" />
-                            <label>Seller Address</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="buyerNTNCNIC"
-                                       @bind-Value="invoice.buyerNTNCNIC" />
-                            <label>Buyer NTN/CNIC</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="buyerBusinessName"
-                                       @bind-Value="invoice.buyerBusinessName" />
-                            <label>Buyer Business Name</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="buyerProvince"
-                                       @bind-Value="invoice.buyerProvince" />
-                            <label>Buyer Province</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="buyerRegisterationType"
-                                       @bind-Value="invoice.buyerRegisterationType" />
-                            <label>Registration Type</label>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="form-floating">
-                            <InputText class="form-control border-primary" id="buyerAddress"
-                                       @bind-Value="invoice.buyerAddress" />
-                            <label>Buyer Address</label>
-                        </div>
-                    </div>
-
-                </div>
-
+            <div>
+                <label>Invoice Date</label>
+                <input type="date" @bind="invoice.invoiceDate" />
             </div>
+
+            <div>
+                <label>Invoice Ref No</label>
+                <input @bind="invoice.invoiceRefNo" />
+            </div>
+
+            <div>
+                <label>Scenario Id</label>
+                <input @bind="invoice.scenarioId" />
+            </div>
+
         </div>
 
-    </EditForm>
+    </div>
 
-    <!-- ITEM -->
-    <div class="container">
 
-        <div class="card shadow-lg border-0 mb-4">
+    <div class="section">
 
-            <!-- HEADER -->
-            <div class="card-header bg-gradient bg-success text-white py-3">
-                <h5 class="mb-0 fw-bold">
-                    Item Details
-                </h5>
+        <h3>Seller Information</h3>
+
+        <div class="grid">
+
+            <div>
+                <label>Seller NTN/CNIC</label>
+                <input @bind="invoice.sellerNTNCNIC" />
+            </div>
+
+            <div>
+                <label>Seller Business Name</label>
+                <input @bind="invoice.sellerBusinessName" />
+            </div>
+
+            <div>
+                <label>Seller Province</label>
+                <input @bind="invoice.sellerProvince" />
+            </div>
+
+            <div>
+                <label>Seller Address</label>
+                <input @bind="invoice.sellerAddress" />
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <h3>Buyer Information</h3>
+
+        <div class="grid">
+
+            <div>
+                <label>Buyer NTN/CNIC</label>
+                <input @bind="invoice.buyerNTNCNIC" />
+            </div>
+
+            <div>
+                <label>Buyer Business Name</label>
+                <input @bind="invoice.buyerBusinessName" />
+            </div>
+
+            <div>
+                <label>Buyer Province</label>
+                <input @bind="invoice.buyerProvince" />
             </div>
 
             <div class="card-body bg-light">
@@ -337,72 +276,433 @@
                     </div>
                 </div>
 
+            <div>
+                <label>Buyer Registration Type</label>
+                <input @bind="invoice.buyerRegisterationType" />
             </div>
 
         </div>
 
     </div>
 
-    <!-- TABLE -->
-    <div class="card shadow border-0 mb-4">
 
-        <div class="card-header bg-info text-white">
-            <h5 class="mb-0 fw-semibold">Items List</h5>
+    <div class="section">
+
+        <h3>Item Entry</h3>
+
+        <div class="grid">
+
+            <div>
+                <label>hsCode</label>
+                <input @bind="currentItem.hsCode" />
+            </div>
+
+            <div>
+                <label>Description</label>
+                <input @bind="currentItem.productDescription" />
+            </div>
+
+            <div>
+                <label>Rate</label>
+                <<input type="number" @bind="currentItem.rate" @bind:event="oninput" />
+            </div>
+
+            <div>
+                <label>UOM</label>
+                <input @bind="currentItem.uoM" />
+            </div>
+
+            <div>
+                <label>Quantity</label>
+                <input type="number" @bind="currentItem.quantity" @bind:event="oninput" />
+            </div>
+
+            <div>
+                <label>ValueExST</label>
+                <input type="number" @bind="currentItem.valueSalesExcludingsST" />
+            </div>
+
+            <div>
+                <label>RetailPrice</label>
+                <input type="number" @bind="currentItem.fixedNotifiedValueOrRetailPrice" />
+            </div>
+
+            <div>
+                <label>SalesTax</label>
+                <input type="number" @bind="currentItem.salesTaxApplicable" />
+            </div>
+
+            <div>
+                <label>Withheld</label>
+                <input type="number" @bind="currentItem.salesTaxWithheldAtSource" />
+            </div>
+
+            <div>
+                <label>ExtraTax</label>
+                <input type="number" @bind="currentItem.extraTax" />
+            </div>
+
+            <div>
+                <label>FurtherTax</label>
+                <input type="number" @bind="currentItem.furtherTax" />
+            </div>
+
+            <div>
+                <label>SRO</label>
+                <input type="number" @bind="currentItem.sroScheduleNo" />
+            </div>
+
+            <div>
+                <label>FED</label>
+                <input type="number" @bind="currentItem.fedPayable" />
+            </div>
+
+            <div>
+                <label>Discount</label>
+                <input type="number" @bind="currentItem.discount" />
+            </div>
+
+            <div>
+                <label>SaleType</label>
+                <input @bind="currentItem.saleType" />
+            </div>
+
+            <div>
+                <label>SROItem</label>
+                <input @bind="currentItem.sroItemSerialNo" />
+            </div>
+
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-hover text-center align-middle mb-0">
+        <button class="add-btn" @onclick="AddItem">
+            + Add Item
+        </button>
 
-                <thead class="table-info">
+    </div>
+
+
+    <div class="section">
+
+        <h3>Items List</h3>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
                     <tr>
+                        <th>#</th>
+                        <th>hsCode</th>
                         <th>Description</th>
                         <th>Rate</th>
+                        <th>UOM</th>
                         <th>Qty</th>
-                        <th>Tax</th>
                         <th>Total</th>
+                        <th>ValueExST</th>
+                        <th>RetailPrice</th>
+                        <th>SalesTax</th>
+                        <th>Withheld</th>
+                        <th>Extra</th>
+                        <th>Further</th>
+                        <th>SRO</th>
+                        <th>FED</th>
+                        <th>Discount</th>
+                        <th>SaleType</th>
+                        <th>SROItem</th>
                         <th>Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
+
                     @for (int i = 0; i < invoice.items.Count; i++)
                     {
+                        var item = invoice.items[i];
+
                         <tr>
-                            <td>@invoice.items[i].productDescription</td>
-                            <td>@invoice.items[i].rate</td>
-                            <td>@invoice.items[i].quantity</td>
-                            <td>@invoice.items[i].salesTaxApplicable</td>
-                            <td class="fw-bold text-success">@invoice.items[i].totalValues</td>
+
+                            <td>@(i + 1)</td>
+                            <td>@item.hsCode</td>
+                            <td>@item.productDescription</td>
+                            <td>@item.rate</td>
+                            <td>@item.uoM</td>
+                            <td>@item.quantity</td>
+                            <td>@item.totalValues</td>
+                            <td>@item.valueSalesExcludingsST</td>
+                            <td>@item.fixedNotifiedValueOrRetailPrice</td>
+                            <td>@item.salesTaxApplicable</td>
+                            <td>@item.salesTaxWithheldAtSource</td>
+                            <td>@item.extraTax</td>
+                            <td>@item.furtherTax</td>
+                            <td>@item.sroScheduleNo</td>
+                            <td>@item.fedPayable</td>
+                            <td>@item.discount</td>
+                            <td>@item.saleType</td>
+                            <td>@item.sroItemSerialNo</td>
+
                             <td>
-                                <button class="btn btn-danger btn-sm"
-                                        @onclick="() => DeleteItem(i)">
-                                    Delete
+                                <button class="delete-btn" @onclick="(() => DeleteItem(i))">
+                                    X
                                 </button>
                             </td>
+
                         </tr>
                     }
+
                 </tbody>
 
             </table>
+
         </div>
+
+        <div class="grand-total">
+            Grand Total : <b>@GrandTotal()</b>
+        </div>
+
     </div>
 
-    <!-- TOTAL -->
-    <div class="card shadow border-0">
 
-        <div class="card-body bg-light d-flex justify-content-between align-items-center">
+    <div class="actions">
 
-            <h4 class="fw-bold text-primary mb-0">
-                Grand Total:
-                <span class="text-success ms-2">@GrandTotal()</span>
-            </h4>
+        <button class="save-btn" @onclick="SaveInvoice">
+            Save Invoice
+        </button>
 
-            <button class="btn btn-primary btn-lg px-4 shadow" @onclick="Save">
-                💾 Save Invoice
-            </button>
-
-        </div>
+        <button class="api-btn">
+            Call API
+        </button>
 
     </div>
 
 </div>
+
+
+<style>
+
+    body {
+        background: #eef2f7;
+        font-family: Segoe UI,Arial;
+    }
+
+    .title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .invoice-container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .section {
+        margin-bottom: 25px;
+    }
+
+        .section h3 {
+            border-left: 5px solid #2563eb;
+            padding-left: 10px;
+        }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        gap: 15px;
+    }
+
+    label {
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+        table th {
+            background: #1d4ed8;
+            color: white;
+            padding: 10px;
+            position: sticky;
+            top: 0;
+        }
+
+        table td {
+            border: 1px solid #e5e7eb;
+            padding: 6px;
+        }
+
+    .add-btn {
+        margin-top: 10px;
+        background: #16a34a;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+    }
+
+    .delete-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 5px 8px;
+        border-radius: 4px;
+    }
+
+    .grand-total {
+        margin-top: 15px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .actions {
+        margin-top: 25px;
+    }
+
+    .save-btn {
+        background: #f59e0b;
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 6px;
+        margin-right: 10px;
+    }
+
+    .api-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 6px;
+    }
+
+</style>
+
+@code {
+
+    InvoiceMaster invoice = new InvoiceMaster()
+    {
+        items = new List<InvoiceDetails>()
+    };
+
+    InvoiceDetails currentItem = new InvoiceDetails();
+
+    void AddItem()
+    {
+        if (currentItem.rate < 0) currentItem.rate = 0;
+        if (currentItem.quantity < 0) currentItem.quantity = 0;
+
+        currentItem.totalValues = currentItem.rate * currentItem.quantity;
+
+        if (currentItem.valueSalesExcludingsST == 0)
+            currentItem.valueSalesExcludingsST = currentItem.totalValues;
+
+        if (currentItem.salesTaxApplicable == 0)
+            currentItem.salesTaxApplicable = currentItem.totalValues * 0.18M;
+
+        invoice.items.Add(currentItem);
+
+        currentItem = new InvoiceDetails();
+
+        StateHasChanged();
+    }
+
+    void SafeDefaults()
+    {
+
+        if (currentItem.rate < 0)
+            currentItem.rate = 0;
+
+        if (currentItem.quantity < 0)
+            currentItem.quantity = 0;
+
+        if (currentItem.valueSalesExcludingsST < 0)
+            currentItem.valueSalesExcludingsST = 0;
+
+        if (currentItem.salesTaxApplicable < 0)
+            currentItem.salesTaxApplicable = 0;
+
+        if (currentItem.extraTax < 0)
+            currentItem.extraTax = 0;
+
+        if (currentItem.furtherTax < 0)
+            currentItem.furtherTax = 0;
+
+        if (currentItem.fedPayable < 0)
+            currentItem.fedPayable = 0;
+
+        if (currentItem.discount < 0)
+            currentItem.discount = 0;
+
+    }
+
+
+    void CalculateCurrentItem()
+    {
+
+        currentItem.totalValues = currentItem.rate * currentItem.quantity;
+
+        if (currentItem.valueSalesExcludingsST == 0)
+        {
+            currentItem.valueSalesExcludingsST = currentItem.totalValues;
+        }
+
+        if (currentItem.salesTaxApplicable == 0)
+        {
+            currentItem.salesTaxApplicable = currentItem.valueSalesExcludingsST * 0.18M;
+        }
+
+    }
+
+
+    void DeleteItem(int index)
+    {
+        invoice.items.RemoveAt(index);
+    }
+
+
+    decimal GrandTotal()
+    {
+
+        decimal total = 0;
+
+        foreach (var item in invoice.items)
+        {
+
+            decimal itemTotal =
+            item.totalValues
+            + item.salesTaxApplicable
+            + item.extraTax
+            + item.furtherTax
+            + item.fedPayable
+            - item.discount;
+
+            total += itemTotal;
+
+        }
+
+        return total;
+
+    }
+
+
+    void SaveInvoice()
+    {
+        Console.WriteLine("Invoice Saved");
+    }
+
+}

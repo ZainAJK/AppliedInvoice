@@ -33,6 +33,7 @@ namespace AppliedInvoice.Models
 
     public class FbrInvoiceItems
     {
+        public Guid recID { get; set; }
         public string? hsCode { get; set; }
         public string? productDescription { get; set; }
         public string rate { get; set; }

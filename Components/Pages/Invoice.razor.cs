@@ -1,16 +1,22 @@
 ﻿using AppliedInvoice.Models;
 using AppliedInvoice.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 
+
 namespace AppliedInvoice.Components.Pages
 {
+  
     public partial class Invoice
     {
         // 🔥 DB Inject
-        
+        public List<string> MyLogs { get; set; } = new();
+        public List<string> MyErrors { get; set; } = new();
+
 
         FbrInvoice invoice = new FbrInvoice()
         {
@@ -24,7 +30,8 @@ namespace AppliedInvoice.Components.Pages
 
         void AddItem()
         {
-            CalculateCurrentItem();
+            //CalculateCurrentItem();
+            invoice.items ??= new();
             invoice.items.Add(currentItem);
             currentItem = new FbrInvoiceItems();
         }
@@ -73,9 +80,36 @@ namespace AppliedInvoice.Components.Pages
                 - currentItem.discount;
         }
 
-        public void DeleteItem(int index)
+        public void EditItem(string _RecID)
         {
-            invoice.items.RemoveAt(index);
+            var _Item = invoice.items.Where(e=> e.recID.ToString() == _RecID).FirstOrDefault();
+            if(_Item != null)
+            {
+                currentItem = _Item;
+            }
+
+            InvokeAsync(StateHasChanged);
+        }
+
+        public void DeleteItem(string _RecID)
+        {
+            var _Item = invoice.items.Where(e => e.recID.ToString() == _RecID).FirstOrDefault();
+            if (_Item != null)
+            {
+                invoice.items.Remove(_Item);
+                if(invoice.items.Count > 0)
+                {
+                    currentItem = invoice.items[0];
+                }
+                else
+                {
+                    currentItem = new();
+                }
+            }
+
+            InvokeAsync(StateHasChanged);
+
+            
         }
 
         public decimal GrandTotal()
@@ -92,15 +126,32 @@ namespace AppliedInvoice.Components.Pages
                 - item.discount
             );
         }
-
-        public void Save()
+        [Inject] public IJSRuntime JS { get; set; }
+        public async void Save()
         {
             if (GetFbrResponse())
             {
-                DB.SaveInvoice(invoice);
+                long invoiceId = DB.SaveInvoice(invoice);
+
+                if (invoiceId > 0)
+                {
+                    DB.FBRResponseSave(ApiResponse, invoiceId);
+
+                    // ✅ SUCCESS POPUP
+                    await JS.InvokeVoidAsync("alert", "✅ Invoice Successfully Saved!");
+                }
+                else
+                {
+                    // ❌ ERROR POPUP
+                    await JS.InvokeVoidAsync("alert", "❌ Invoice Save Failed!");
+                }
+
+                MyLogs = DB.Logs;
+                MyErrors = DB.Errors;
+
+                InvokeAsync(StateHasChanged);
             }
         }
-
         public bool GetFbrResponse()
         {
             ApiResponse = new()
@@ -113,6 +164,10 @@ namespace AppliedInvoice.Components.Pages
                 validationResponse = null!,
                 errorDetails = null!
             };
+
+      
+               
+
 
             return true; 
 
@@ -135,6 +190,8 @@ namespace AppliedInvoice.Components.Pages
                 {
                     string jsonResponse = httpResponse.Content.ReadAsStringAsync().Result;
 
+
+
                     ApiResponse = JsonConvert.DeserializeObject<FbrResponse>(jsonResponse);
 
                     if (ApiResponse.statusCode == "00")
@@ -152,5 +209,100 @@ namespace AppliedInvoice.Components.Pages
                 }
             }
         }
+
+        public void Temp()
+        {
+            invoice = new();
+
+            invoice.invoiceType = "Sale Invoice";
+            invoice.invoiceDate = DateTime.Now;
+            invoice.sellerNTNCNIC = "123456-7";
+            invoice.sellerBusinessName = "Zain Enterprises";
+            invoice.sellerProvince = "Sindh";
+            invoice.sellerAddress = "Flat # 101, Ellahbad Terrace";
+
+            invoice.buyerNTNCNIC = "765432-1";
+            invoice.buyerBusinessName = "Hassan Enterprises";
+            invoice.buyerProvince = "Sindh";
+            invoice.buyerAddress = "Flat # 202, Ellahbad Terrace";
+
+            invoice.buyerRegisterationType = "Registered";
+            invoice.invoiceRefNo = "001-123";
+            invoice.scenarioId = "001";
+
+            //---
+
+
+
+            currentItem.recID = Guid.NewGuid();
+            currentItem.hsCode = "8001.9821";
+            currentItem.productDescription = "Rice";
+            currentItem.rate = 100;
+            currentItem.uoM = "KG";
+            currentItem.quantity = 10;
+            currentItem.valueSalesExcludingsST = currentItem.rate * currentItem.quantity;
+            currentItem.salesTaxApplicable = 0.18M;
+
+            decimal _SalesTax = decimal.Parse((currentItem.valueSalesExcludingsST * currentItem.salesTaxApplicable).ToString());
+            currentItem.totalValues = currentItem.valueSalesExcludingsST + (_SalesTax);
+            currentItem.fixedNotifiedValueOrRetailPrice = currentItem.totalValues;
+            currentItem.salesTaxWithheldAtSource = Math.Round(_SalesTax * 0.20M,2);
+            currentItem.extraTax = 0.00M;
+            currentItem.furtherTax = 0.00M;
+            currentItem.sroScheduleNo = 4321;
+            currentItem.fedPayable = 0.00M;
+            currentItem.discount = 0.00M;
+            currentItem.saleType = "Regular";
+            currentItem.sroItemSerialNo = "6541";
+
+            AddItem();
+
+            currentItem.recID = Guid.NewGuid();
+            currentItem.hsCode = "8001.1289";
+            currentItem.productDescription = "Sugar";
+            currentItem.rate = 150;
+            currentItem.uoM = "KG";
+            currentItem.quantity = 10;
+            currentItem.valueSalesExcludingsST = currentItem.rate * currentItem.quantity;
+            currentItem.salesTaxApplicable = 0.18M;
+
+             _SalesTax = decimal.Parse((currentItem.valueSalesExcludingsST * currentItem.salesTaxApplicable).ToString());
+            currentItem.totalValues = currentItem.valueSalesExcludingsST + (_SalesTax);
+            currentItem.fixedNotifiedValueOrRetailPrice = currentItem.totalValues;
+            currentItem.salesTaxWithheldAtSource = Math.Round(_SalesTax * 0.20M, 2);
+            currentItem.extraTax = 0.00M;
+            currentItem.furtherTax = 0.00M;
+            currentItem.sroScheduleNo = 1234;
+            currentItem.fedPayable = 0.00M;
+            currentItem.discount = 0.00M;
+            currentItem.saleType = "Regular";
+            currentItem.sroItemSerialNo = "9874";
+
+            AddItem();
+
+            currentItem.recID = Guid.NewGuid();
+            currentItem.hsCode = "8001.1230";
+            currentItem.productDescription = "Cooking Oil";
+            currentItem.rate = 520;
+            currentItem.uoM = "KG";
+            currentItem.quantity = 50;
+            currentItem.valueSalesExcludingsST = currentItem.rate * currentItem.quantity;
+            currentItem.salesTaxApplicable = 0.18M;
+
+             _SalesTax = decimal.Parse((currentItem.valueSalesExcludingsST * currentItem.salesTaxApplicable).ToString());
+            currentItem.totalValues = currentItem.valueSalesExcludingsST + (_SalesTax);
+            currentItem.fixedNotifiedValueOrRetailPrice = currentItem.totalValues;
+            currentItem.salesTaxWithheldAtSource = Math.Round(_SalesTax * 0.20M, 2);
+            currentItem.extraTax = 0.00M;
+            currentItem.furtherTax = 0.00M;
+            currentItem.sroScheduleNo = 1234;
+            currentItem.fedPayable = 0.00M;
+            currentItem.discount = 0.00M;
+            currentItem.saleType = "Regular";
+            currentItem.sroItemSerialNo = "9874";
+
+            AddItem();
+        }
+
     }
 }
