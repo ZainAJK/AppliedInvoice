@@ -98,7 +98,25 @@ namespace AppliedInvoice.Services
 
         public async Task<RegStateResponse> GetRegistrationTypeAsync(string NTN_CNIC)
         {
+            List<string> Messages = new();
+
+            if(string.IsNullOrWhiteSpace(NTN_CNIC))
+            {
+                return new RegStateResponse
+                {
+                    statuscode = "Error",
+                    REGISTRATION_NO = NTN_CNIC,
+                    REGISTRATION_TYPE = "Invalid NTN/CNIC provided."
+                };
+            }
+
+
+
+            try
+            {
             var sendBoxUrl = "https://gw.fbr.gov.pk/dist/v1/Get_Reg_Type";
+
+
 
             var requestObject = new
             {
@@ -113,7 +131,10 @@ namespace AppliedInvoice.Services
                     "application/json")
             };
 
-            var response = await _httpClient.SendAsync(request);
+                Messages.Add($"Request URL: {request.RequestUri}");
+                Messages.Add($"Request: {JsonSerializer.Serialize(requestObject)}");
+
+                var response = await _httpClient.SendAsync(request);
 
             var json = await response.Content.ReadAsStringAsync();
 
@@ -131,6 +152,18 @@ namespace AppliedInvoice.Services
             var result = JsonSerializer.Deserialize<RegStateResponse>(json, options);
 
             return result!;
+
+            }
+            catch (Exception error)
+            {
+                return new RegStateResponse
+                {
+                    statuscode = "Error",
+                    REGISTRATION_NO = NTN_CNIC,
+                    REGISTRATION_TYPE = "Unknown: " + error.Message + " | " + string.Join(", ", Messages)
+                };
+
+            }
         }
 
 

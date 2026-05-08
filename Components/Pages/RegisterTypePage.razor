@@ -1,0 +1,53 @@
+﻿@page "/RegisterType"
+
+@using AppliedInvoice.Models
+@using AppliedInvoice.Services
+@inject FbrService ApiService
+
+<h3>Get Registration Type</h3>
+
+<br />
+
+<EditForm Model="@buyerModel" OnSubmit="(() => GetRegType(buyerModel.BuyerNTN))" FormName="RegisterNameModel">
+
+    <div class="form-floating">
+        <InputText @bind-Value="buyerModel.BuyerNTN"
+                   class="form-control mb-2"
+                   placeholder="Enter Buyer NTN" />
+        <label>Buyer NTN</label>
+    </div>
+
+    <br />
+
+    <button type="submit"  class="btn btn-primary">
+        Get Registration Type
+    </button>
+
+</EditForm>
+
+@if (!string.IsNullOrEmpty(registrationType))
+{
+    <div class="alert alert-success mt-3">
+        Registration Type: @registrationType
+    </div>
+}
+
+@code {
+
+
+
+    public BuyerModel buyerModel { get; set; } = new();
+
+    public string registrationType { get; set; } = string.Empty;
+
+    private void GetRegType(string _NTN)
+    {
+        var _result = ApiService.GetRegistrationTypeAsync(_NTN).Result;
+        registrationType =  _result.REGISTRATION_TYPE;
+    }
+
+    public class BuyerModel
+    {
+        public string BuyerNTN { get; set; } = "1761600";
+    }
+}
