@@ -1,7 +1,5 @@
 ﻿using AppliedInvoice.Models;
-using AppliedInvoice.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -23,7 +21,7 @@ namespace AppliedInvoice.Components.Pages
             items = new List<FbrInvoiceItems>()
         };
 
-        FbrInvoiceItems currentItem = new FbrInvoiceItems();
+        public FbrInvoiceItems currentItem = new FbrInvoiceItems();
 
         FbrResponse ApiResponse = new();
         bool IsFbrResponse { get; set; }
@@ -133,23 +131,23 @@ namespace AppliedInvoice.Components.Pages
             {
                 long invoiceId = DB.SaveInvoice(invoice);
 
-                if (invoiceId > 0)
-                {
-                    DB.FBRResponseSave(ApiResponse, invoiceId);
+                //if (invoiceId > 0)
+                //{
+                //    DB.FBRResponseSave(ApiResponse, invoiceId);
 
-                    // ✅ SUCCESS POPUP
-                    await JS.InvokeVoidAsync("alert", "✅ Invoice Successfully Saved!");
-                }
-                else
-                {
-                    // ❌ ERROR POPUP
-                    await JS.InvokeVoidAsync("alert", "❌ Invoice Save Failed!");
-                }
+                //    // ✅ SUCCESS POPUP
+                //    await JS.InvokeVoidAsync("alert", "✅ Invoice Successfully Saved!");
+                //}
+                //else
+                //{
+                //    // ❌ ERROR POPUP
+                //    await JS.InvokeVoidAsync("alert", "❌ Invoice Save Failed!");
+                //}
 
-                MyLogs = DB.Logs;
-                MyErrors = DB.Errors;
+                //MyLogs = DB.Logs;
+                //MyErrors = DB.Errors;
 
-                InvokeAsync(StateHasChanged);
+                await InvokeAsync(StateHasChanged);
             }
         }
         public bool GetFbrResponse()
@@ -171,138 +169,46 @@ namespace AppliedInvoice.Components.Pages
 
             return true; 
 
-            string BaseAddress = "https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb";
+          
 
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", "your-token");
-
-                StringContent content = new StringContent(
-                    JsonConvert.SerializeObject(invoice),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
-                HttpResponseMessage httpResponse = client.PostAsync(BaseAddress, content).Result;
-
-                if (httpResponse.IsSuccessStatusCode)
-                {
-                    string jsonResponse = httpResponse.Content.ReadAsStringAsync().Result;
-
-
-
-                    ApiResponse = JsonConvert.DeserializeObject<FbrResponse>(jsonResponse);
-
-                    if (ApiResponse.statusCode == "00")
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            
         }
 
-        public void Temp()
+        void SafeDefaults()
         {
-            invoice = new();
-
-            invoice.invoiceType = "Sale Invoice";
-            invoice.invoiceDate = DateTime.Now;
-            invoice.sellerNTNCNIC = "123456-7";
-            invoice.sellerBusinessName = "Zain Enterprises";
-            invoice.sellerProvince = "Sindh";
-            invoice.sellerAddress = "Flat # 101, Ellahbad Terrace";
-
-            invoice.buyerNTNCNIC = "765432-1";
-            invoice.buyerBusinessName = "Hassan Enterprises";
-            invoice.buyerProvince = "Sindh";
-            invoice.buyerAddress = "Flat # 202, Ellahbad Terrace";
-
-            invoice.buyerRegisterationType = "Registered";
-            invoice.invoiceRefNo = "001-123";
-            invoice.scenarioId = "001";
-
-            //---
 
 
+            if (currentItem.quantity < 0)
+                currentItem.quantity = 0;
 
-            currentItem.recID = Guid.NewGuid();
-            currentItem.hsCode = "8001.9821";
-            currentItem.productDescription = "Rice";
-            currentItem.rate = 100;
-            currentItem.uoM = "KG";
-            currentItem.quantity = 10;
-            currentItem.valueSalesExcludingsST = currentItem.rate * currentItem.quantity;
-            currentItem.salesTaxApplicable = 0.18M;
+            if (currentItem.valueSalesExcludingST < 0)
+                currentItem.valueSalesExcludingST = 0;
 
-            decimal _SalesTax = decimal.Parse((currentItem.valueSalesExcludingsST * currentItem.salesTaxApplicable).ToString());
-            currentItem.totalValues = currentItem.valueSalesExcludingsST + (_SalesTax);
-            currentItem.fixedNotifiedValueOrRetailPrice = currentItem.totalValues;
-            currentItem.salesTaxWithheldAtSource = Math.Round(_SalesTax * 0.20M,2);
-            currentItem.extraTax = 0.00M;
-            currentItem.furtherTax = 0.00M;
-            currentItem.sroScheduleNo = 4321;
-            currentItem.fedPayable = 0.00M;
-            currentItem.discount = 0.00M;
-            currentItem.saleType = "Regular";
-            currentItem.sroItemSerialNo = "6541";
+            if (currentItem.salesTaxApplicable < 0)
+                currentItem.salesTaxApplicable = 0;
 
-            AddItem();
+            if (currentItem.extraTax < 0)
+                currentItem.extraTax = 0;
 
-            currentItem.recID = Guid.NewGuid();
-            currentItem.hsCode = "8001.1289";
-            currentItem.productDescription = "Sugar";
-            currentItem.rate = 150;
-            currentItem.uoM = "KG";
-            currentItem.quantity = 10;
-            currentItem.valueSalesExcludingsST = currentItem.rate * currentItem.quantity;
-            currentItem.salesTaxApplicable = 0.18M;
+            if (currentItem.furtherTax < 0)
+                currentItem.furtherTax = 0;
 
-             _SalesTax = decimal.Parse((currentItem.valueSalesExcludingsST * currentItem.salesTaxApplicable).ToString());
-            currentItem.totalValues = currentItem.valueSalesExcludingsST + (_SalesTax);
-            currentItem.fixedNotifiedValueOrRetailPrice = currentItem.totalValues;
-            currentItem.salesTaxWithheldAtSource = Math.Round(_SalesTax * 0.20M, 2);
-            currentItem.extraTax = 0.00M;
-            currentItem.furtherTax = 0.00M;
-            currentItem.sroScheduleNo = 1234;
-            currentItem.fedPayable = 0.00M;
-            currentItem.discount = 0.00M;
-            currentItem.saleType = "Regular";
-            currentItem.sroItemSerialNo = "9874";
+            if (currentItem.fedPayable < 0)
+                currentItem.fedPayable = 0;
 
-            AddItem();
+            if (currentItem.discount < 0)
+                currentItem.discount = 0;
 
-            currentItem.recID = Guid.NewGuid();
-            currentItem.hsCode = "8001.1230";
-            currentItem.productDescription = "Cooking Oil";
-            currentItem.rate = 520;
-            currentItem.uoM = "KG";
-            currentItem.quantity = 50;
-            currentItem.valueSalesExcludingsST = currentItem.rate * currentItem.quantity;
-            currentItem.salesTaxApplicable = 0.18M;
-
-             _SalesTax = decimal.Parse((currentItem.valueSalesExcludingsST * currentItem.salesTaxApplicable).ToString());
-            currentItem.totalValues = currentItem.valueSalesExcludingsST + (_SalesTax);
-            currentItem.fixedNotifiedValueOrRetailPrice = currentItem.totalValues;
-            currentItem.salesTaxWithheldAtSource = Math.Round(_SalesTax * 0.20M, 2);
-            currentItem.extraTax = 0.00M;
-            currentItem.furtherTax = 0.00M;
-            currentItem.sroScheduleNo = 1234;
-            currentItem.fedPayable = 0.00M;
-            currentItem.discount = 0.00M;
-            currentItem.saleType = "Regular";
-            currentItem.sroItemSerialNo = "9874";
-
-            AddItem();
         }
+        void DeleteItem(int index)
+        {
+            invoice.items.RemoveAt(index);
+        }
+        void SaveInvoice()
+        {
+            Console.WriteLine("Invoice Saved");
+        }
+
 
     }
 }

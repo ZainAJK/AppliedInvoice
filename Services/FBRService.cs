@@ -52,13 +52,13 @@ namespace AppliedInvoice.Services
         // Get Invoice Json Text from appsetting.json file
         public async Task<FbrInvoice> GetInvoiceFromAppSettingsAsync()
         {
-            var inv = _config.GetSection("FbrValidate_sb").Get<FbrInvoice>();
+            var inv = _config.GetSection("FbrInvoice2").Get<FbrInvoice>();
             if (inv == null)
                 throw new Exception("FbrInvoice section not found in appsettings.json");
             // Set runtime values here (IMPORTANT)
-            inv.invoiceDate = DateTime.Now;
+            //inv.invoiceDate = DateTime.Now;
             // Optional: override invoice ref dynamically
-            inv.invoiceRefNo = "INV-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            //inv.invoiceRefNo = "INV-" + DateTime.Now.ToString("yyyyMMddHHmmss");
             return inv;
         }
 

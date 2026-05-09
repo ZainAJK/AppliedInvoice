@@ -1,5 +1,7 @@
 ﻿@page "/invoice"
 @using AppliedInvoice.Models
+@using AppliedInvoice.Services
+@inject SQLiteService DB
 
 <h2 class="title">Invoice Entry</h2>
 
@@ -18,7 +20,7 @@
 
             <div>
                 <label>Invoice Date</label>
-                <input type="date" @bind="invoice.invoiceDate" />
+                <input @bind="invoice.invoiceDate" />
             </div>
 
             <div>
@@ -278,7 +280,7 @@
 
             <div>
                 <label>Buyer Registration Type</label>
-                <input @bind="invoice.buyerRegisterationType" />
+                <input @bind="invoice.buyerRegistrationType" />
             </div>
 
         </div>
@@ -304,7 +306,7 @@
 
             <div>
                 <label>Rate</label>
-                <<input type="number" @bind="currentItem.rate" @bind:event="oninput" />
+                <input type="number" @bind="currentItem.rate" @bind:event="oninput" />
             </div>
 
             <div>
@@ -319,7 +321,7 @@
 
             <div>
                 <label>ValueExST</label>
-                <input type="number" @bind="currentItem.valueSalesExcludingsST" />
+                <input type="number" @bind="currentItem.valueSalesExcludingST" />
             </div>
 
             <div>
@@ -428,7 +430,7 @@
                             <td>@item.uoM</td>
                             <td>@item.quantity</td>
                             <td>@item.totalValues</td>
-                            <td>@item.valueSalesExcludingsST</td>
+                            <td>@item.valueSalesExcludingST</td>
                             <td>@item.fixedNotifiedValueOrRetailPrice</td>
                             <td>@item.salesTaxApplicable</td>
                             <td>@item.salesTaxWithheldAtSource</td>
@@ -475,7 +477,7 @@
     </div>
 
 </div>
-
+</div>
 
 <style>
 
@@ -594,115 +596,7 @@
 
 @code {
 
-    InvoiceMaster invoice = new InvoiceMaster()
-    {
-        items = new List<InvoiceDetails>()
-    };
-
-    InvoiceDetails currentItem = new InvoiceDetails();
-
-    void AddItem()
-    {
-        if (currentItem.rate < 0) currentItem.rate = 0;
-        if (currentItem.quantity < 0) currentItem.quantity = 0;
-
-        currentItem.totalValues = currentItem.rate * currentItem.quantity;
-
-        if (currentItem.valueSalesExcludingsST == 0)
-            currentItem.valueSalesExcludingsST = currentItem.totalValues;
-
-        if (currentItem.salesTaxApplicable == 0)
-            currentItem.salesTaxApplicable = currentItem.totalValues * 0.18M;
-
-        invoice.items.Add(currentItem);
-
-        currentItem = new InvoiceDetails();
-
-        StateHasChanged();
-    }
-
-    void SafeDefaults()
-    {
-
-        if (currentItem.rate < 0)
-            currentItem.rate = 0;
-
-        if (currentItem.quantity < 0)
-            currentItem.quantity = 0;
-
-        if (currentItem.valueSalesExcludingsST < 0)
-            currentItem.valueSalesExcludingsST = 0;
-
-        if (currentItem.salesTaxApplicable < 0)
-            currentItem.salesTaxApplicable = 0;
-
-        if (currentItem.extraTax < 0)
-            currentItem.extraTax = 0;
-
-        if (currentItem.furtherTax < 0)
-            currentItem.furtherTax = 0;
-
-        if (currentItem.fedPayable < 0)
-            currentItem.fedPayable = 0;
-
-        if (currentItem.discount < 0)
-            currentItem.discount = 0;
-
-    }
-
-
-    void CalculateCurrentItem()
-    {
-
-        currentItem.totalValues = currentItem.rate * currentItem.quantity;
-
-        if (currentItem.valueSalesExcludingsST == 0)
-        {
-            currentItem.valueSalesExcludingsST = currentItem.totalValues;
-        }
-
-        if (currentItem.salesTaxApplicable == 0)
-        {
-            currentItem.salesTaxApplicable = currentItem.valueSalesExcludingsST * 0.18M;
-        }
-
-    }
-
-
-    void DeleteItem(int index)
-    {
-        invoice.items.RemoveAt(index);
-    }
-
-
-    decimal GrandTotal()
-    {
-
-        decimal total = 0;
-
-        foreach (var item in invoice.items)
-        {
-
-            decimal itemTotal =
-            item.totalValues
-            + item.salesTaxApplicable
-            + item.extraTax
-            + item.furtherTax
-            + item.fedPayable
-            - item.discount;
-
-            total += itemTotal;
-
-        }
-
-        return total;
-
-    }
-
-
-    void SaveInvoice()
-    {
-        Console.WriteLine("Invoice Saved");
-    }
+   
+    
 
 }

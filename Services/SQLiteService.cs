@@ -19,7 +19,7 @@ namespace AppliedInvoice.Services
             MyConnection = new SQLiteConnection($"Data Source={dbPath};");
         }
 
-        public void SaveInvoice(FbrInvoice invoice)
+        public long SaveInvoice(FbrInvoice invoice)
         {
 
             DataTable Inv_Master = GetDataTable("InvoiceMaster"); 
@@ -42,7 +42,7 @@ namespace AppliedInvoice.Services
             Row_Master["buyerNTNCNIC"] = invoice.buyerNTNCNIC;
             Row_Master["buyerBusinessName"] = invoice.buyerBusinessName;
             Row_Master["buyerProvince"] = invoice.buyerProvince;
-            Row_Master["buyerRegisterationType"] = invoice.buyerRegisterationType;
+            Row_Master["buyerRegisterationType"] = invoice.buyerRegistrationType;
             Row_Master["buyerAddress"] = invoice.buyerAddress;
 
             foreach (var item in invoice.items)
@@ -106,7 +106,7 @@ namespace AppliedInvoice.Services
                     cmd.Parameters.AddWithValue("@buyerNTNCNIC", invoice.buyerNTNCNIC);
                     cmd.Parameters.AddWithValue("@buyerBusinessName", invoice.buyerBusinessName);
                     cmd.Parameters.AddWithValue("@buyerProvince", invoice.buyerProvince);
-                    cmd.Parameters.AddWithValue("@buyerRegisterationType", invoice.buyerRegisterationType);
+                    cmd.Parameters.AddWithValue("@buyerRegisterationType", invoice.buyerRegistrationType);
                     cmd.Parameters.AddWithValue("@buyerAddress", invoice.buyerAddress);
 
                     masterId = (long)cmd.ExecuteScalar();
@@ -154,7 +154,7 @@ namespace AppliedInvoice.Services
                         cmd.Parameters.AddWithValue("@sroItemSerialNo", item.sroItemSerialNo);
                         cmd.Parameters.AddWithValue("@totalValues", item.totalValues);
 
-                        cmd.ExecuteNonQuery();
+                        return cmd.ExecuteNonQuery();
                     }
                 }
 
@@ -168,6 +168,7 @@ namespace AppliedInvoice.Services
                 if (MyConnection.State == ConnectionState.Open)
                     MyConnection.Close();
             }
+            return 0;
         }
 
         public DataTable GetDataTable(string tableName)

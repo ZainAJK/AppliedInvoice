@@ -59,7 +59,7 @@
                 <div class="row mb-2">
                     <div class="col-3">Invoice Date</div>
                     <div class="col-9">
-                        <InputDate class="form-control"
+                        <InputText class="form-control"
                                    @bind-Value="testInvoice.invoiceDate" />
                     </div>
                 </div>
@@ -104,6 +104,8 @@
                            placeholder="Address"
                            @bind-Value="testInvoice.sellerAddress" />
 
+               
+
             </div>
         </div>
 
@@ -128,48 +130,88 @@
                            placeholder="Address"
                            @bind-Value="testInvoice.buyerAddress" />
 
+                <InputText class="form-control"
+                           placeholder="Register Type"
+                           @bind-Value="testInvoice.buyerRegistrationType" />
+
             </div>
         </div>
 
         <!-- ITEMS -->
-       @*  <div class="card mb-3">
+        <div class="card mb-3">
             <div class="card-header">Items</div>
+
             <div class="card-body">
 
                 @if (testInvoice.items != null)
                 {
-                    @for (int i = 0; i < testInvoice.items.Count; i++)
-                    {
-                        <div class="border p-3 mb-3">
+                    <div class="table-responsive">
 
-                            <InputText class="form-control mb-2"
-                                       placeholder="HS Code"
-                                       @bind-Value="testInvoice.items[i].hsCode" />
+                        <table class="table table-bordered table-striped align-middle">
 
-                            <InputText class="form-control mb-2"
-                                       placeholder="Description"
-                                       @bind-Value="testInvoice.items[i].productDescription" />
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width:10%">HS Code</th>
+                                    <th style="width:45%">Description</th>
+                                    <th style="width:10%">Rate</th>
+                                    <th style="width:10%">UOM</th>
+                                    <th style="width:10%">Quantity</th>
+                                    <th style="width:15%">Total Value</th>
+                                </tr>
+                            </thead>
 
-                            <InputText class="form-control mb-2"
-                                       placeholder="Rate"
-                                       @bind-Value="testInvoice.items[i].rate" />
+                            <tbody>
 
-                            <InputText class="form-control mb-2"
-                                       placeholder="UOM"
-                                       @bind-Value="testInvoice.items[i].uoM" />
+                                @foreach (FbrInvoiceItems invItem in testInvoice.items)
+                                {
+                                    <tr>
 
-                            <InputNumber class="form-control mb-2"
-                                         @bind-Value="testInvoice.items[i].quantity" />
+                                        <td>
+                                            <InputText class="form-control"
+                                                       placeholder="HS Code"
+                                                       @bind-Value="invItem.hsCode" />
+                                        </td>
 
-                            <InputNumber class="form-control"
-                                         @bind-Value="testInvoice.items[i].totalValues" />
+                                        <td>
+                                            <InputText class="form-control"
+                                                       placeholder="Description"
+                                                       @bind-Value="invItem.productDescription" />
+                                        </td>
 
-                        </div>
-                    }
+                                        <td>
+                                            <InputText class="form-control"
+                                                       placeholder="Rate"
+                                                       @bind-Value="invItem.rate" />
+                                        </td>
+
+                                        <td>
+                                            <InputText class="form-control"
+                                                       placeholder="UOM"
+                                                       @bind-Value="invItem.uoM" />
+                                        </td>
+
+                                        <td>
+                                            <InputNumber class="form-control"
+                                                         @bind-Value="invItem.quantity" />
+                                        </td>
+
+                                        <td>
+                                            <InputNumber class="form-control"
+                                                         @bind-Value="invItem.totalValues" />
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
                 }
 
             </div>
-        </div> *@
+        </div>
 
         <!-- SUBMIT -->
         <div class="text-end">

@@ -10,7 +10,7 @@ namespace AppliedInvoice.Models
     {
         public string? invoiceType { get; set; }
 
-        public DateTime invoiceDate { get; set; }
+        public string? invoiceDate { get; set; }
 
         public string? sellerNTNCNIC { get; set; }
         public string? sellerBusinessName { get; set; }
@@ -22,7 +22,7 @@ namespace AppliedInvoice.Models
         public string? buyerProvince { get; set; }
         public string? buyerAddress { get; set; }
 
-        public string? buyerRegisterationType { get; set; }
+        public string? buyerRegistrationType { get; set; }
 
         public string? invoiceRefNo { get; set; }
 
@@ -50,7 +50,7 @@ namespace AppliedInvoice.Models
         public decimal extraTax { get; set; }
         public decimal furtherTax { get; set; }
 
-        public decimal sroScheduleNo { get; set; }
+        public string? sroScheduleNo { get; set; }
 
         public decimal fedPayable { get; set; }
 
@@ -89,7 +89,7 @@ namespace AppliedInvoice.Models
         public string itemSNo { get; set; }
         public string statusCode { get; set; }
         public string status { get; set; }
-        public int invoiceNo { get; set; }
+        public string invoiceNo { get; set; } = string.Empty;
         public string errorCode { get; set; }
         public string error { get; set; }
     }

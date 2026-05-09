@@ -68,7 +68,7 @@ namespace AppliedInvoice.Models
             ReqInvoice.buyerBusinessName = BuyerProfile.buyerBusinessName;
             ReqInvoice.buyerProvince = BuyerProfile.buyerProvince.ToString();
             ReqInvoice.buyerAddress = BuyerProfile.buyerAddress;
-            ReqInvoice.buyerRegisterationType = BuyerProfile.buyerRegisterationType.ToString();
+            ReqInvoice.buyerRegistrationType = BuyerProfile.buyerRegisterationType.ToString();
 
             ReqInvoice.invoiceRefNo = AppliedVoucher.Master.Vou_No;
             ReqInvoice.scenarioId = ((Enums.AppEnums.ScenarioID)Enums.AppEnums.ScenarioType.Standard_rated_supplies).ToString();  // Sale Invoice
