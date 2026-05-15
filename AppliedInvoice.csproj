@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppliedInvoice.Logic\AppliedInvoice.Logic.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="wwwroot\DB\FbrDInvoice.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -30,6 +26,10 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\AppliedInvoice.Logic\AppliedInvoice.Logic.csproj" />
   </ItemGroup>
 
 </Project>

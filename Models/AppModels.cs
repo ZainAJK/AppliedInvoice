@@ -67,7 +67,7 @@ namespace AppliedInvoice.Models
         public string statusCode { get; set; }
         public string status { get; set; }
         public string message { get; set; }
-        public string invoiceNumber { get; set; }
+        public long invoiceNumber { get; set; }
         public string qrCode { get; set; }
 
         public ValidationResponseRoot validationResponse { get; set; }

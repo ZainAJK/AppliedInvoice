@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="../AppliedInvoice.Logic/AppliedInvoice.Logic.csproj" Id="9cb5552e-dc46-4e39-a2d0-de04d37b935e" />
+  <Project Path="../../../AppliedInvoice.Logic/AppliedInvoice.Logic.csproj" />
   <Project Path="AppliedInvoice.csproj" />
 </Solution>
